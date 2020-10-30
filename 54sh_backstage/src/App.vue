@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <span>升华网后台</span>
+    <router-view></router-view>
   </div>
 </template>
 
