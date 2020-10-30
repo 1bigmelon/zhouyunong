@@ -1,24 +1,56 @@
-# 54sh_backstage
+# 升华网后台项目 - 前端
 
-## Project setup
+升华网后台包括 **审稿后台** 和 **网站管理** 后台
+
+参与人员：王盛泽 周雨侬 赵文涵
+
+### 项目技术选型
+
+- Vue-CLI
+- Vuex
+- Vue-router
+- Ant-Design-Vue
+- SCSS
+- Eslint
+
+### 项目结构
+
 ```
-npm install
+54sh_backstage
+|
+├-- node_modules/
+├-- public
+|	├-- favicon.ico
+|	└-- index.html
+├-- src
+|	├-- api/			# API工厂
+|	├-- assets/			# 资源文件
+|	├-- components/		# 组件
+|	├-- layouts/		# 布局（或许只有一个文件）
+|	├-- pages/			# 页面
+|	├-- plugins/		# 插件（配置依赖）
+|	├-- router/			# 路由
+|	├-- store/			# Vuex数据源
+|	├-- App.vue
+|	└-- main.js
+├-- babel.config.js		# babel配置文件
+├-- package.json
+└-- package-lock.json
 ```
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+### 任务模块
 
-### Compiles and minifies for production
-```
-npm run build
-```
+#### 页面
 
-### Lints and fixes files
-```
-npm run lint
-```
+- [ ] 主布局组件
+- [ ] 登录页面
+- [ ] 主页
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+#### 路由
+
+- [ ] 配置路由
+- [ ] （配置路由守卫）
+
+#### Vuex / API工厂
+
+#### 
