@@ -13,6 +13,12 @@
 - SCSS
 - Eslint
 
+### 项目环境
+
+Node.js:   12.13.0
+
+@vue/cli:   4.5.8
+
 ### 项目结构
 
 ```
@@ -20,20 +26,20 @@
 |
 ├-- node_modules/
 ├-- public
-|	├-- favicon.ico
-|	└-- index.html
+|   ├-- favicon.ico
+|   └-- index.html
 ├-- src
-|	├-- api/			# API工厂
-|	├-- assets/			# 资源文件
-|	├-- components/		# 组件
-|	├-- layouts/		# 布局（或许只有一个文件）
-|	├-- pages/			# 页面
-|	├-- plugins/		# 插件（配置依赖）
-|	├-- router/			# 路由
-|	├-- store/			# Vuex数据源
-|	├-- App.vue
-|	└-- main.js
-├-- babel.config.js		# babel配置文件
+|   ├-- api/            # API工厂
+|   ├-- assets/         # 资源文件
+|   ├-- components/     # 组件
+|   ├-- layouts/        # 布局（可能只有一个文件）
+|   ├-- pages/          # 页面
+|   ├-- plugins/        # 插件（配置依赖）
+|   ├-- router/         # 路由
+|   ├-- store/          # Vuex数据源
+|   ├-- App.vue
+|   └-- main.js
+├-- babel.config.js     # babel配置文件
 ├-- package.json
 └-- package-lock.json
 ```
@@ -52,5 +58,3 @@
 - [ ] （配置路由守卫）
 
 #### Vuex / API工厂
-
-#### 
