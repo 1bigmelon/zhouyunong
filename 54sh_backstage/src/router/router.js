@@ -28,7 +28,7 @@ const routes = [
 const routerConfig = {
   mode: 'history',
   routes: routes,
-  base: '/mgnt'
+  base: '/manage'
 }
 
 let router = new VueRouter(routerConfig)
