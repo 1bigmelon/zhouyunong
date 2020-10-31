@@ -9,14 +9,15 @@ import API from './plugins/api'
 import Vuex from 'vuex'
 import Router from './router/router'
 import {
-  Layout
+  Layout, Message, Menu, Icon, Avatar, Dropdown
 } from 'ant-design-vue'
 
 Vue.prototype.$axios = Axios
 Vue.prototype.$api = API
 
 // antdv config
-Vue.use(Layout)
+Vue.use(Layout).use(Message).use(Menu).use(Icon).use(Avatar)
+   .use(Dropdown)
 
 Vue.use(Vuex)
 
