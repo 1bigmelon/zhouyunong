@@ -15,6 +15,11 @@
   }
 </script>
 
-<style lang="scss" scoped>
-  
+<style lang="scss">
+  #nprogress {
+    .bar {
+      // TODO 修改loading bar颜色
+      // 默认是蓝色
+    }
+  }
 </style>
