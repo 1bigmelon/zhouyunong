@@ -45,4 +45,8 @@ Axios.interceptors.response.use((res) => {
   return Promise.reject(err.response.data)
 })
 
-export default Axios
+export default {
+  install(Vue) {
+    Object.defineProperty(Vue.prototype, '$axios', { value: Axios })
+  }
+}

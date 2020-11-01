@@ -4,4 +4,8 @@ const Repository = {
   ...authAPI
 }
 
-export default Repository
+export default {
+  install(Vue) {
+    Object.defineProperty(Vue.prototype, '$api', { value: Repository })
+  }
+}
