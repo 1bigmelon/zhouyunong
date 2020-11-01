@@ -1,5 +1,13 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css'
+
+// 屏蔽反复点击同一路由时的报错
+const originalPush = VueRouter.prototype.push
+VueRouter.prototype.push = function push(location) {
+  return originalPush.call(this, location).catch(err => err)
+}
 
 Vue.use(VueRouter)
 
@@ -12,16 +20,32 @@ const routes = [
        * 合法转至index
        * 过期转至login
        */
-      return '/index'
+      return '/login'
     }
   },
   {
     path: '/index',
-    component: () => import('../pages/index.vue')
+    component: () => import('../layouts/MainLayout'),
+    children: [
+      {
+        path: '',
+        component: () => import('../pages/index')
+      }
+    ]
   },
   {
     path: '/login',
-    component: () => import('../pages/login.vue')
+    component: () => import('../pages/login')
+  },
+  {
+    path: '/article',
+    component: () => import('../layouts/MainLayout'),
+    children: [
+      {
+        path: 'new',
+        component: () => import('../pages/article/newArticle')
+      }
+    ]
   }
 ]
 
@@ -32,5 +56,14 @@ const routerConfig = {
 }
 
 let router = new VueRouter(routerConfig)
+
+router.beforeEach((to, from, next) => {
+  NProgress.start()
+  next()
+})
+
+router.afterEach(() => {
+  NProgress.done()
+})
 
 export default router
