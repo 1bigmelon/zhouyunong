@@ -3,37 +3,39 @@
  * @Author: wangsz12
  * @Date: 10.30 22.47
  * @LastEditors: wangz12
- * @LastEditTime: 10.30 22.47
+ * @LastEditTime: 11.1 00.20
  -->
 
 <template>
   <div class="container">
     <a-layout>
       <a-layout-header class="header">
-        <span>中南大学升华网管理系统</span>
-        <span>{{ systemName }}</span>
-        <div class="user-info">
+        <span class="logo" @click="$router.push('/index')">
+          <span>中南大学升华网管理系统</span>
+          <span>{{ systemName }}</span>
+        </span>
+        <span class="user-info">
           <a-avatar icon="user" style="margin-right: .5rem;"/>
           <a-dropdown>
             <span>{{ username }} <a-icon type="caret-down" style="transform: scale(0.8);"/> </span>
             <a-menu slot="overlay">
-              <a-menu-item>
+              <a-menu-item @click="logout()">
                 <a-icon type="export" />
                 <span>注销</span>
               </a-menu-item>
             </a-menu>
           </a-dropdown>
-        </div>
+        </span>
       </a-layout-header>
       <a-layout class="main-container">
         <a-layout-sider class="sider">
-          <a-menu class="menu" mode="inline">
+          <a-menu class="menu" mode="inline" theme="dark">
             <a-sub-menu key="article">
               <template slot="title">
                 <a-icon type="file-text"/>
                 <span>文章管理</span>
               </template>
-              <a-menu-item key="newArticle">
+              <a-menu-item key="newArticle" @click="newArticle">
                 <a-icon type="form" />
                 <span>新建文稿</span>
               </a-menu-item>
@@ -84,14 +86,14 @@
                 <span>人员管理</span>
               </a-menu-item>
             </a-sub-menu>
-            <a-menu-item key="logout">
+            <a-menu-item key="logout" @click="logout" selectable="false">
               <a-icon type="export" />
               <span>注销</span>
             </a-menu-item>
           </a-menu>
         </a-layout-sider>
         <a-layout-content class="content">
-          content
+          <router-view></router-view>
         </a-layout-content>
       </a-layout>
     </a-layout>
@@ -106,13 +108,22 @@
         systemName: '审稿后台',
         username: 'ABC'
       }
+    },
+    methods: {
+      newArticle() {
+        this.$router.push('/article/new')
+      },
+      logout() {
+        localStorage.removeItem('token')
+        this.$router.push('/login')
+      }
     }
   }
 </script>
 
 <style lang="scss" scoped>
   .header {
-    background-color: rgb(20, 120, 226);
+    background-color: rgba(20, 120, 226, .9);
     // background-image: linear-gradient(to right, rgb(20, 120, 226), rgb(46, 114, 187));
     position: fixed;
     z-index: 1;
@@ -123,24 +134,33 @@
       user-select: none;
       -moz-user-select: none;
       -webkit-user-select: none;
+    }
 
-      &:nth-child(1) {
-        font-size: 1.3rem;
+    .logo {
+      &:hover {
+        cursor: pointer;
       }
 
-      &:nth-child(2) {
-        padding-left: 0.5rem;
-        font-size: 1rem;
+      span {
+        &:nth-child(1) {
+          font-size: 1.3rem;
+        }
+
+        &:nth-child(2) {
+          padding-left: 0.5rem;
+          font-size: 1rem;
+        }
       }
     }
 
     .user-info {
-      width: 8.5rem;
+      width: fit-content;
       padding-left: 1rem;
       float: right;
 
       span {
         vertical-align: middle;
+        font-size: 1rem;
       }
     }
   }
@@ -150,12 +170,13 @@
     margin-left: 200px;
 
     .sider {
-      background-color: rgba(236, 239, 241, .3);
-      // border-right: lightgray solid 0.5px;
       overflow: auto;
       height: 100vh;
       position: fixed;
       left: 0;
+      user-select: none;
+      -moz-user-select: none;
+      -webkit-user-select: none;
     }
 
     .content {
