@@ -3,25 +3,20 @@
  * @Author: wangsz12
  * @Date: 10.30 22.47
  * @LastEditors: wangz12
- * @LastEditTime: 10.30 22.47
+ * @LastEditTime: 11.01 11.16
  -->
 
 <template>
   <div class="container">
-    <layout>
-      aaa
-    </layout>
+    <!-- dev test -->
+      index
+    <!-- dev test -->
   </div>
 </template>
 
 <script>
-  import layout from '../layouts/MainLayout'
-
   export default {
     name: 'index',
-    components: {
-      layout
-    },
     data() {
       return {
         
