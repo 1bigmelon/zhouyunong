@@ -1,11 +1,3 @@
-<!--
- * @FileDescription: 新建文稿 页面
- * @Author: wangsz12
- * @Date: 11.01 11.17
- * @LastEditors: wangz12
- * @LastEditTime: 11.01 11.16
- -->
-
 <template>
   <div class="container">
     <!-- dev test -->
@@ -23,8 +15,8 @@ export default {
 
     }
   },
-  mounted() {
-    console.log('mounted')
+  methods: {
+    
   }
 }
 </script>
