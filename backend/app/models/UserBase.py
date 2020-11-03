@@ -1,4 +1,5 @@
 from app import db
+from mongoengine import *
 import datetime
 
 class UserBase(db.Document):
@@ -12,6 +13,7 @@ class UserBase(db.Document):
         self.last_modify = datetime.datetime.now()
         return self.save()
 
+    @staticmethod
     def get_by_id(id):
         return UserBase.objects(id=id).first()
 

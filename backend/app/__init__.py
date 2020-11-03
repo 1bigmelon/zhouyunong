@@ -37,13 +37,6 @@ def create_app() -> Flask:
     from app.api.v1.sign import sign_blueprint
     from app.api.v1.initialize import initialize_blueprint
 
-    from app.api.v1.masteradmin.auth import mauth_blueprint
-    from app.api.v1.masteradmin.domain import mdomain_blueprint
-    from app.api.v1.masteradmin.user import muser_blueprint
-    from app.api.v1.masteradmin.role import mrole_blueprint
-    from app.api.v1.masteradmin.event import mevent_blueprint
-    from app.api.v1.masteradmin.routine import mroutine_blueprint
-    from app.api.v1.masteradmin.sign import msign_blueprint
     # from app.api.v1.sign import sign
     # from app.api.v1.base_info import base_info
     # from app.api.v1.domain import domain
@@ -57,15 +50,6 @@ def create_app() -> Flask:
     api_v1.register_blueprint(sign_blueprint)
     api_v1.register_blueprint(initialize_blueprint)
 
-    api_v1.register_blueprint(mauth_blueprint)
-    api_v1.register_blueprint(mdomain_blueprint)
-    api_v1.register_blueprint(muser_blueprint)
-    api_v1.register_blueprint(mrole_blueprint)
-    api_v1.register_blueprint(mevent_blueprint)
-    api_v1.register_blueprint(mroutine_blueprint)
-    api_v1.register_blueprint(msign_blueprint)
-    
-    
     # api_v1.register_blueprint(base_info)
     # api_v1.register_blueprint(domain)
 
