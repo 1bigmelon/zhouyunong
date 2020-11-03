@@ -35,7 +35,7 @@
                 <a-icon type="file-text"/>
                 <span>文章管理</span>
               </template>
-              <a-menu-item key="newArticle" @click="newArticle">
+              <a-menu-item key="newArticle" @click="$router.push('/article/new')">
                 <a-icon type="form" />
                 <span>新建文稿</span>
               </a-menu-item>
@@ -48,16 +48,16 @@
                 <span>文稿管理</span>
               </a-menu-item>
             </a-sub-menu>
-            <a-sub-menu key="class">
+            <a-sub-menu key="category">
               <template slot="title">
                 <a-icon type="bars"/>
                 <span>分类管理</span>
               </template>
-              <a-menu-item key="newClass">
+              <a-menu-item key="newCategory">
                 <a-icon type="form" />
                 <span>新建分类</span>
               </a-menu-item>
-              <a-menu-item key="showClass">
+              <a-menu-item key="showCategory">
                 <a-icon type="appstore" />
                 <span>查看分类</span>
               </a-menu-item>
@@ -92,8 +92,15 @@
             </a-menu-item>
           </a-menu>
         </a-layout-sider>
-        <a-layout-content class="content">
-          <router-view></router-view>
+        <a-layout-content class="content-container">
+          <div class="breadcrumb">
+            <a-breadcrumb :routes="routes">
+              
+            </a-breadcrumb>
+          </div>
+          <div class="content">
+            <router-view></router-view>
+          </div>
         </a-layout-content>
       </a-layout>
     </a-layout>
@@ -106,13 +113,11 @@
     data() {
       return {
         systemName: '审稿后台',
-        username: 'ABC'
+        username: 'ABC',
+        routes: []
       }
     },
     methods: {
-      newArticle() {
-        this.$router.push('/article/new')
-      },
       logout() {
         localStorage.removeItem('token')
         this.$router.push('/login')
@@ -122,68 +127,79 @@
 </script>
 
 <style lang="scss" scoped>
-  .header {
-    background-color: rgba(20, 120, 226, .9);
-    // background-image: linear-gradient(to right, rgb(20, 120, 226), rgb(46, 114, 187));
-    position: fixed;
-    z-index: 1;
-    width: 100%;
+  .container {
+    height: 100%;
 
-    span {
-      color: white;
-      user-select: none;
-      -moz-user-select: none;
-      -webkit-user-select: none;
-    }
-
-    .logo {
-      &:hover {
-        cursor: pointer;
-      }
+    .header {
+      background-color: rgba(20, 120, 226, .9);
+      // background-image: linear-gradient(to right, rgb(20, 120, 226), rgb(46, 114, 187));
+      position: fixed;
+      z-index: 1;
+      width: 100%;
 
       span {
-        &:nth-child(1) {
-          font-size: 1.3rem;
+        color: white;
+        user-select: none;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+      }
+
+      .logo {
+        &:hover {
+          cursor: pointer;
         }
 
-        &:nth-child(2) {
-          padding-left: 0.5rem;
+        span {
+          &:nth-child(1) {
+            font-size: 1.3rem;
+          }
+
+          &:nth-child(2) {
+            padding-left: 0.5rem;
+            font-size: 1rem;
+          }
+        }
+      }
+
+      .user-info {
+        width: fit-content;
+        padding-left: 1rem;
+        float: right;
+
+        span {
+          vertical-align: middle;
           font-size: 1rem;
         }
       }
     }
 
-    .user-info {
-      width: fit-content;
-      padding-left: 1rem;
-      float: right;
+    .main-container {
+      margin-top: 4rem;
+      margin-left: 200px;
 
-      span {
-        vertical-align: middle;
-        font-size: 1rem;
+      .sider {
+        overflow: auto;
+        height: 100vh;
+        position: fixed;
+        left: 0;
+        user-select: none;
+        -moz-user-select: none;
+        -webkit-user-select: none;
       }
-    }
-  }
 
-  .main-container {
-    margin-top: 4rem;
-    margin-left: 200px;
+      .content-container {
+        overflow: initial;
+        padding: 1rem;
+        min-height: calc(100vh - 64px);
 
-    .sider {
-      overflow: auto;
-      height: 100vh;
-      position: fixed;
-      left: 0;
-      user-select: none;
-      -moz-user-select: none;
-      -webkit-user-select: none;
-    }
-
-    .content {
-      background-color: lightgreen;
-      height: 100%;
-      width: 100%;
-      overflow: initial;
+        .content {
+          box-shadow: 1px 3px 15px -5px rgba(0,0,0,.4);
+          background-color: #fff;
+          border-radius: 15px;
+          padding: 1rem 1.5rem;
+          color: black;
+        }
+      }
     }
   }
 </style>
