@@ -14,10 +14,10 @@ Vue.use(Vuex)
 
 // ant design vue
 import {
-  Layout, Message, Menu, Icon, Avatar, Dropdown, Button
+  Layout, Message, Menu, Icon, Avatar, Dropdown, Button, Breadcrumb
 } from 'ant-design-vue'
 Vue.use(Layout).use(Message).use(Menu).use(Icon).use(Avatar)
-   .use(Dropdown).use(Button)
+   .use(Dropdown).use(Button).use(Breadcrumb)
 
 // MainLayout
 import shLayout from './layouts/MainLayout'
