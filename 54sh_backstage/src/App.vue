@@ -20,6 +20,7 @@
     .bar {
       // TODO 修改loading bar颜色
       // 默认是蓝色
+      background-color: orange !important;
     }
   }
 </style>
