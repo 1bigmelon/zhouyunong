@@ -1,14 +1,19 @@
-from app import db
+from mongoengine import *
 from app.models.UserBase import UserBase
+from app.models.Base import Base
+from app.models.Tag import Tag
+from app.models.Class import Class
 import datetime
 
-class Ariticle(db.Document):
-    title = db.StringField()
-    password = db.StringField(default='')
-    last_modify = db.DateTimeField()
-    create_datetime = db.DateTimeField()
-    writable = db.ListField(db.ReferenceField(UserBase,reverse_delete_rule=4))
-    readable = db.ListField(db.ReferenceField(UserBase,reverse_delete_rule=4))
+class Ariticle(Base):
+    title = StringField()
+    password = StringField(default='')
+    last_modify = DateTimeField()
+    create_datetime = DateTimeField()
+    writable = ListField(ReferenceField(UserBase,reverse_delete_rule=4))
+    readable = ListField(ReferenceField(UserBase,reverse_delete_rule=4))
+    tags = ListField(ReferenceField(Tag))
+    class_ = ReferenceField(Class)
     meta = {'allow_inheritance': True}
     
 
@@ -21,24 +26,25 @@ class Ariticle(db.Document):
         self.password = password
         return self.save()
 
-    def new_article(author:UserBase):
+    @staticmethod
+    def new_article(author: UserBase):
         return Ariticle(writable=[author],readable=[author],last_modify=datetime.datetime.now())
 
-    def append_access(self,new_writables=[],new_readables=[]):
+    def append_access(self, new_writables=[], new_readables=[]):
         for _ in new_writables:
             self.update(add_to_set__writable=_)
         for _ in new_readables:
             self.update(add_to_set__readable=_)
         return
 
-    def discard_access(self,ban_writables=[],ban_readables=[]):
+    def discard_access(self, ban_writables=[], ban_readables=[]):
         for _ in ban_writables:
             self.update(pull__writable=_)
         for _ in ban_readables:
             self.update(pull__readable=_)
         return
 
-    def modify_access(self,new_writables=[],new_readables=[]):
+    def modify_access(self, new_writables=[], new_readables=[]):
         self.writable = new_writables
         self.readable = new_readables
         return self.save()
