@@ -42,8 +42,18 @@ const routes = [
     component: () => import('../layouts/MainLayout'),
     children: [
       {
-        path: 'new',
+        path: 'newArticle',
         component: () => import('../pages/article/newArticle')
+      }
+    ]
+  },
+  {
+    path: '/tag',
+    component: () => import('../layouts/MainLayout'),
+    children: [
+      {
+        path: 'newTag',
+        component: () => import ('../pages/tag/newTag')
       }
     ]
   }
@@ -57,8 +67,28 @@ const routerConfig = {
 
 let router = new VueRouter(routerConfig)
 
+const breadcrumbNames = {
+  'index': '主页',
+  'article': '文章管理',
+  'newArticle': '新建文章',
+  'tag': '标签管理',
+  'newTag': '新建标签'
+}
+
 router.beforeEach((to, from, next) => {
   NProgress.start()
+
+  // 获取url分段数组
+  let breadcrumbs = to.fullPath.split('/')
+  breadcrumbs.shift()
+  
+  let breadcrumbRoutes = []
+  for (let item in breadcrumbNames) {
+    if (breadcrumbs.includes(item)) {
+      breadcrumbRoutes.push({ breadcrumbName: breadcrumbNames[item] })
+    }
+  }
+  router.app.$options.store.dispatch('setBreadcrumbs', breadcrumbRoutes)
   next()
 })
 
