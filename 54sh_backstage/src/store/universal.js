@@ -1,13 +1,21 @@
-import Vuex from 'vuex'
+const state = {
+  breadcrumbs: []
+}
 
-export default new Vuex.Store({
-  state: {
-    
-  },
-  mutations: {
-
-  },
-  actions: {
-    
+const mutations = {
+  setBreadcrumbs(state, newBreadcrumb) {
+    state.breadcrumbs = newBreadcrumb
   }
-})
+}
+
+const actions = {
+  setBreadcrumbs({ commit }, newBreadcrumb) {
+    commit('setBreadcrumbs', newBreadcrumb)
+  }
+}
+
+export default {
+  state,
+  mutations,
+  actions
+}
