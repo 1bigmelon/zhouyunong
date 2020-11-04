@@ -31,10 +31,6 @@ def create_app() -> Flask:
     from app.api.v1.auth import auth_blueprint
     from app.api.v1.domain import domain_blueprint
     from app.api.v1.user import user_blueprint
-    from app.api.v1.role import role_blueprint
-    from app.api.v1.event import event_blueprint
-    from app.api.v1.routine import routine_blueprint
-    from app.api.v1.sign import sign_blueprint
     from app.api.v1.initialize import initialize_blueprint
 
     # from app.api.v1.sign import sign
@@ -44,10 +40,6 @@ def create_app() -> Flask:
     api_v1.register_blueprint(auth_blueprint)
     api_v1.register_blueprint(domain_blueprint)
     api_v1.register_blueprint(user_blueprint)
-    api_v1.register_blueprint(role_blueprint)
-    api_v1.register_blueprint(event_blueprint)
-    api_v1.register_blueprint(routine_blueprint)
-    api_v1.register_blueprint(sign_blueprint)
     api_v1.register_blueprint(initialize_blueprint)
 
     # api_v1.register_blueprint(base_info)

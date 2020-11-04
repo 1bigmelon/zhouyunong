@@ -25,6 +25,8 @@ initialize_blueprint = Blueprint('initialize', __name__, url_prefix='/initialize
 @initialize_blueprint.route('/pull', methods=['GET'])
 def git_pull():
     os.system('git pull')
+    with open('reload','w') as f:
+        pass
     return trueReturn()
 # @initialize_blueprint.before_request
 # def before_request():
