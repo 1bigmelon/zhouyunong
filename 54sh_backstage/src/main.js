@@ -9,8 +9,9 @@ Vue.use(axiosConfig)
 
 // dependencies
 import Vuex from 'vuex'
-import Router from './router/router'
+import store from './store/index'
 Vue.use(Vuex)
+import Router from './router/router'
 
 // ant design vue
 import {
@@ -27,5 +28,6 @@ Vue.config.productionTip = false
 
 new Vue({
   render: h => h(App),
-  router: Router
+  router: Router,
+  store: store
 }).$mount('#app')
