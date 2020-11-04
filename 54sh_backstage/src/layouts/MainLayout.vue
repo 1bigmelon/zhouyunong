@@ -35,7 +35,7 @@
                 <a-icon type="file-text"/>
                 <span>文章管理</span>
               </template>
-              <a-menu-item key="newArticle" @click="$router.push('/article/new')">
+              <a-menu-item key="newArticle" @click="$router.push('/article/newArticle')">
                 <a-icon type="form" />
                 <span>新建文稿</span>
               </a-menu-item>
@@ -67,7 +67,7 @@
                 <a-icon type="tags"/>
                 <span>标签管理</span>
               </template>
-              <a-menu-item key="newTag">
+              <a-menu-item key="newTag" @click="$router.push('/tag/newTag')">
                 <a-icon type="form" />
                 <span>新建标签</span>
               </a-menu-item>
@@ -93,13 +93,16 @@
           </a-menu>
         </a-layout-sider>
         <a-layout-content class="content-container">
-          <div class="breadcrumb">
-            <a-breadcrumb :routes="routes">
-              
-            </a-breadcrumb>
-          </div>
+          <a-breadcrumb class="breadcrumb">
+            <a-breadcrumb-item v-for="(item, index) in breadcrumbs" :key="index">
+              {{ item.breadcrumbName }}
+            </a-breadcrumb-item>
+          </a-breadcrumb>
           <div class="content">
             <router-view></router-view>
+          </div>
+          <div class="copyright">
+            <span>2020 © SHer</span>
           </div>
         </a-layout-content>
       </a-layout>
@@ -108,13 +111,14 @@
 </template>
 
 <script>
+  import { mapState } from 'vuex'
+
   export default {
     name: 'MainLayout',
     data() {
       return {
         systemName: '审稿后台',
-        username: 'ABC',
-        routes: []
+        username: 'ABC'
       }
     },
     methods: {
@@ -122,6 +126,12 @@
         localStorage.removeItem('token')
         this.$router.push('/login')
       }
+    },
+    computed: {
+      ...mapState(['breadcrumbs'])
+    },
+    mounted() {
+      console.log(this.breadcrumbs)
     }
   }
 </script>
@@ -192,12 +202,26 @@
         padding: 1rem;
         min-height: calc(100vh - 64px);
 
+        .breadcrumb {
+          padding: 0 0 .7rem 1rem;
+          font-size: 1.1rem;
+          user-select: none;
+          -moz-user-select: none;
+          -webkit-user-select: none;
+        }
+
         .content {
+          min-height: calc(99% - 64px);
           box-shadow: 1px 3px 15px -5px rgba(0,0,0,.4);
           background-color: #fff;
           border-radius: 15px;
           padding: 1rem 1.5rem;
           color: black;
+        }
+
+        .copyright {
+          text-align: center;
+          margin: .8rem auto;
         }
       }
     }
