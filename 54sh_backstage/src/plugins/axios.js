@@ -3,7 +3,7 @@ import axios from 'axios'
 /**
  * TODO 配置baseURL
  */
-export const baseURL = ''
+export const baseURL = 'http://47.115.90.131:10079/api/vi'
 
 export const Axios = axios.create({
   baseURL: baseURL,
