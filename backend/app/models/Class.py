@@ -1,15 +1,15 @@
 import datetime
 import hashlib
 from mongoengine import *
-from app.models.Base import Base
+from app.models.Base import SaveTimeBase
+from app.models.User import User
 
-
-class Class(Base):
+class Class(SaveTimeBase):
     name = StringField()
-    organization = StringField()
+    org = StringField()
     subordinate = StringField()
     description = StringField()
-    last_modify = DateTimeField()
+    modifier = ReferenceField(User)
     click = IntField()
     publish = BooleanField()
 

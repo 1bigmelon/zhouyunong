@@ -13,14 +13,15 @@ def validsign(func):
         return func(*args, **kwargs)
     return decorator
 
-def validcall(func):
-    @wraps(func)
-    def decorator(*args, **kwargs):
-        for i in g.user.roles:
-            if func.__name__ in i.allow_functions or i.allow_functions == ['*']: # 懒人标记*
+def validcall(authority_threshold=0):
+    def internal_validcall(func):
+        @wraps(func)
+        def decorator(*args, **kwargs):
+            if g.user.authority >= authority_threshold: # 懒人标记*
                 return func(*args, **kwargs)
-        return falseReturn(None, f'没有使用{func.__name__}的权限', 401)
-    return decorator
+            return falseReturn(None, f'没有使用{func.__name__}的权限', 401)
+        return decorator
+    return internal_validcall
 
 def handle_error(func):
     @wraps(func)

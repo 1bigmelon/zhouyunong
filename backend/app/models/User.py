@@ -1,21 +1,26 @@
 import datetime
 import hashlib
 from app.models.UserBase import UserBase
+from app.models.Base import SaveTimeBase
 from app.models.Role import Role
 from mongoengine import *
+from app.models.Base import INVISIBLE
 from app import db
-
 
 def encrypt(str):
     return hashlib.sha256(hashlib.sha256(str.encode('utf-8')).hexdigest().encode('utf-8')).hexdigest()
 
-class User(UserBase):
-    user_id = StringField()
-    bio = StringField()
-    password = StringField()
-    nickname = StringField()
-    status = StringField(default='p')
-    authority = IntField(default=0)
+class User(SaveTimeBase):
+    name = StringField()
+    user_id: INVISIBLE = StringField() # 登录凭据
+    password: INVISIBLE = StringField()
+    role = StringField()
+    dep = StringField()
+    contact = StringField()
+    email = StringField()
+    status = StringField()
+    last_ip = StringField()
+    authority: INVISIBLE = IntField(default=0)
     # roles = db.ListField(db.ReferenceField(Role,reverse_delete_rule=4),default=[])
     """
     reverse_delete_rule ==> 引用对象被删除时：
@@ -25,20 +30,6 @@ class User(UserBase):
     3：如果有别的东西引用这个，阻止删除操作
     4：只对ListField套ReferenceField有用，两层List不行，表现与0相同；没有List套会报错；删除引用对象后如同.remove这个元素
     """
-    def set_password(self, password):
-        self.password = encrypt(password)
-        self.last_modify = datetime.datetime.now()
-        return self.save()
-
-    def set_bio(self, bio):
-        self.bio = encrypt(bio)
-        self.last_modify = datetime.datetime.now()
-        return self.save()
-    
-    def set_status(self, status):
-        self.status = encrypt(status)
-        self.last_modify = datetime.datetime.now()
-        return self.save()
 
     def valid_password(self, password):
         return self.password == encrypt(password)
@@ -77,26 +68,12 @@ class User(UserBase):
     #     return self_functions >= set(functions) or '*' in self_functions
 
     @staticmethod
-    def get_or_create(name, user_id, password): # 表格导入的时候防重
-        _t = User.objects(name=name,user_id=user_id,password=encrypt(password))
+    def get_or_create(user_id): # 表格导入的时候防重
+        _t = User.objects(user_id=user_id)
         if any(_t):
             return _t.first()
         else:
             return User(
-                name=name,
-                user_id=user_id, 
-                password=encrypt(password),
-                create_datetime=datetime.datetime.now(),
+                user_id=user_id,
                 last_modify=datetime.datetime.now()
             ).save()
-
-    def get_base_info(self):
-        return {
-            "id": str(self.id),
-            "name": self.name,
-            "user_id": self.user_id,
-            "bio": self.bio,
-            "status": self.status,
-            "last_modify": self.last_modify,
-            "create_datetime": self.create_datetime
-        }

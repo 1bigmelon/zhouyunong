@@ -43,10 +43,10 @@ def before_request():
 
 @handle_error
 @auth_blueprint.route('/signin', methods=['POST'])
-def signin():
+def signin_auth():
     name = g.data.get("username", "").strip()
     password = g.data.get("password", "")
-    user = User.objects(user_id=name).first()
+    user: User = User.objects(user_id=name).first()
 
     if not user or not user.valid_password(password):
         return falseReturn(None, "用户名或密码有误")
@@ -56,29 +56,37 @@ def signin():
     })
 
 @handle_error
-@auth_blueprint.route('/rename', methods=['POST'])
-@verify_params(params=['name'])
+@auth_blueprint.route('/chinfo', methods=['POST'])
+@verify_params()
 @validsign
-def rename_self():
-    g.user.rename(g.data['name'])
+def chinfo_auth():
+    modifiable = {'name', 'role', 'dep', 'status', 'contact', 'email'}
+    modify_keys = {}
+    for k, v in g.data.items():
+        if k in modifiable:
+            modify_keys[k] = v
+    g.user.modify(**modify_keys)
+    g.user.last_ip = request.remote_addr()
+    g.user.save_changes()
     return trueReturn()
 
 @handle_error
 @auth_blueprint.route('/verify', methods=['GET'])
 @validsign
-def verify_self():
+def verify_auth():
     return trueReturn(g.user.get_base_info())
 
 @handle_error
-@auth_blueprint.route('/changepassword', methods=['POST'])
+@auth_blueprint.route('/chpw', methods=['POST'])
 @validsign
-def changepassword():
+def chpw_auth():
     old = g.data.get("old", "")
     password = g.data.get("password", "")
-    user = User.objects().first()
+    user: User = User.objects().first()
     if not user or not user.valid_password(old):
-        return falseReturn(None, "旧密码不匹配")
-    user.set_password(password)
+        return falseReturn(msg="旧密码不匹配")
+    user.password = password
+    user.save_changes()
     return trueReturn({
         'user': user.get_base_info(),
         'token': generate_jwt(user)

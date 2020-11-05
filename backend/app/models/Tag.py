@@ -1,16 +1,16 @@
 import datetime
 import hashlib
 from mongoengine import *
-from app.models.Base import Base
+from app.models.Base import SaveTimeBase
 
 
-class Tag(Base):
+class Tag(SaveTimeBase):
     name = StringField()
-    organization = StringField()
+    org = StringField()
     description = StringField()
-    last_modify = DateTimeField()
     click = IntField()
     visible = BooleanField()
+    publish = BooleanField()
 
     @staticmethod
     def get_or_create(name):
