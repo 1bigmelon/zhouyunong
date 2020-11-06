@@ -57,7 +57,6 @@ def signin_auth():
 
 @handle_error
 @auth_blueprint.route('/chinfo', methods=['POST'])
-@verify_params()
 @validsign
 def chinfo_auth():
     modifiable = {'name', 'role', 'dep', 'status', 'contact', 'email'}

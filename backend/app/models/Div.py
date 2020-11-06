@@ -4,7 +4,7 @@ from mongoengine import *
 from app.models.Base import SaveTimeBase
 from app.models.User import User
 
-class Class(SaveTimeBase):
+class Div(SaveTimeBase):
     name = StringField()
     org = StringField()
     subordinate = StringField()
@@ -15,11 +15,11 @@ class Class(SaveTimeBase):
 
     @staticmethod
     def get_or_create(name):
-        _t = Class.objects(name=name)
+        _t = Div.objects(name=name)
         if any(_t):
             return _t.first()
         else:
-            return Class(
+            return Div(
                 name=name,
                 last_modify=datetime.datetime.now()
             ).save()

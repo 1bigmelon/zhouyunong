@@ -7,21 +7,10 @@ from mongoengine import *
 from app.models.Base import INVISIBLE
 from app import db
 
-def encrypt(str):
-    return hashlib.sha256(hashlib.sha256(str.encode('utf-8')).hexdigest().encode('utf-8')).hexdigest()
+def encrypt(s):
+    return hashlib.sha256(hashlib.sha256(s.encode('utf-8')).hexdigest().encode('utf-8')).hexdigest()
 
 class User(SaveTimeBase):
-    name = StringField()
-    user_id: INVISIBLE = StringField() # 登录凭据
-    password: INVISIBLE = StringField()
-    role = StringField()
-    dep = StringField()
-    contact = StringField()
-    email = StringField()
-    status = StringField()
-    last_ip = StringField()
-    authority: INVISIBLE = IntField(default=0)
-    # roles = db.ListField(db.ReferenceField(Role,reverse_delete_rule=4),default=[])
     """
     reverse_delete_rule ==> 引用对象被删除时：
     0：啥也不干
@@ -30,10 +19,31 @@ class User(SaveTimeBase):
     3：如果有别的东西引用这个，阻止删除操作
     4：只对ListField套ReferenceField有用，两层List不行，表现与0相同；没有List套会报错；删除引用对象后如同.remove这个元素
     """
+    name = StringField()
+    user_id: INVISIBLE = StringField() # 登录凭据
+    password: INVISIBLE = StringField()
+    role = StringField(default='游客')
+    dep = StringField()
+    contact = StringField()
+    email = StringField()
+    status = StringField()
+    last_ip = StringField()
+    authority: INVISIBLE = IntField(default=0)
+    # roles = db.ListField(db.ReferenceField(Role,reverse_delete_rule=4),default=[])
 
     def valid_password(self, password):
         return self.password == encrypt(password)
 
+    @staticmethod
+    def get_or_create(user_id): # 表格导入的时候防重
+        _t = User.objects(user_id=user_id)
+        if any(_t):
+            return _t.first()
+        else:
+            return User(
+                user_id=user_id,
+                last_modify=datetime.datetime.now()
+            ).save()
     # def change_role(self,roles):
     #     for p,i in enumerate(roles):
     #         if not isinstance(i,Role):
@@ -67,13 +77,3 @@ class User(SaveTimeBase):
     #         self_functions|=set(i.allow_functions)
     #     return self_functions >= set(functions) or '*' in self_functions
 
-    @staticmethod
-    def get_or_create(user_id): # 表格导入的时候防重
-        _t = User.objects(user_id=user_id)
-        if any(_t):
-            return _t.first()
-        else:
-            return User(
-                user_id=user_id,
-                last_modify=datetime.datetime.now()
-            ).save()

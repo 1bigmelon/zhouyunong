@@ -1,22 +1,58 @@
 from mongoengine import *
-from app.models.UserBase import UserBase
-from app.models.Base import Base
-from app.models.Tag import Tag
-from app.models.Class import Class
+from app.models.User import User
+from app.models.Base import Base, SaveTimeBase
 import datetime
 
-class Ariticle(Base):
+class Div(SaveTimeBase):
+    name = StringField()
+    org = StringField()
+    subordinate = StringField()
+    description = StringField()
+    modifier = ReferenceField(User)
+    click = IntField()
+    publish = BooleanField()
+
+    @staticmethod
+    def get_or_create(name):
+        _t = Div.objects(name=name)
+        if any(_t):
+            return _t.first()
+        else:
+            return Div(
+                name=name,
+                last_modify=datetime.datetime.now()
+            ).save()
+
+class Tag(SaveTimeBase):
+    name = StringField()
+    org = StringField()
+    description = StringField()
+    click = IntField()
+    visible = BooleanField()
+    publish = BooleanField()
+
+    @staticmethod
+    def get_or_create(name):
+        _t = Tag.objects(name=name)
+        if any(_t):
+            return _t.first()
+        else:
+            return Tag(
+                name=name,
+                last_modify=datetime.datetime.now()
+            ).save()
+
+
+class Ariticle(SaveTimeBase):
     title = StringField()
     password = StringField(default='')
     last_modify = DateTimeField()
     create_datetime = DateTimeField()
-    writable = ListField(ReferenceField(UserBase,reverse_delete_rule=4))
-    readable = ListField(ReferenceField(UserBase,reverse_delete_rule=4))
+    writable = ListField(ReferenceField(User, reverse_delete_rule=4))
+    readable = ListField(ReferenceField(User, reverse_delete_rule=4))
     tags = ListField(ReferenceField(Tag))
-    class_ = ReferenceField(Class)
+    div = ReferenceField(Div)
     meta = {'allow_inheritance': True}
-    
-
     def retitle(self,new_title:str) -> self:
         self.title = new_title
         self.last_modify = datetime.datetime.now()
@@ -27,7 +63,7 @@ class Ariticle(Base):
         return self.save()
 
     @staticmethod
-    def new_article(author: UserBase):
+    def new_article(author: User):
         return Ariticle(writable=[author],readable=[author],last_modify=datetime.datetime.now())
 
     def append_access(self, new_writables=[], new_readables=[]):
@@ -48,14 +84,3 @@ class Ariticle(Base):
         self.writable = new_writables
         self.readable = new_readables
         return self.save()
-
-    def get_base_info(self) -> dict:
-        return {
-            "id": str(self.id),
-            "title": self.title,
-            "last_modify": self.last_modify,
-            "create_datetime": self.create_datetime
-        }
-
-
-

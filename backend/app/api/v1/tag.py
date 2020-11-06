@@ -13,26 +13,13 @@ from app.api import handle_error, validsign, verify_params, validcall
 from app.common.result import falseReturn, trueReturn
 from app.models.User import User
 from app.models.Tag import Tag
-from app.util.auth import generate_jwt, verify_jwt
+from app.util.auth import generate_jwt, verify_jwt, general_before_request
 
 tag_blueprint = Blueprint('tag', __name__, url_prefix='/tag')
 
 @tag_blueprint.before_request
 def before_request():
-    try:
-        if request.get_data():
-            g.data = request.get_json(silent=True)
-        Authorization = request.headers.get('Authorization', None)
-        print(Authorization)
-        if Authorization:
-            token = Authorization
-            g.token = token
-            g.user, msg = verify_jwt(token)
-        else:
-            pass
-    except:
-        traceback.print_exc()
-        return falseReturn(None, '数据错误')
+    return general_before_request()
 
 @handle_error
 @tag_blueprint.route('/modify', methods=['POST'])
@@ -43,8 +30,7 @@ def modify_tag():
     t = Tag.get_or_create(g.data['name'])
     t.org = g.data['org']
     t.description = g.data['description']
-    t.last_modify = datetime.datetime.now()
-    t.save()
+    t.save_changes()
     return trueReturn()
 
 @handle_error
@@ -54,6 +40,7 @@ def modify_tag():
 @validcall(2048)
 def remove_tag():
     t = Tag.objects(g.data['name'])
+    if not t: return falseReturn(msg='无此标签')
     t.delete()
     return trueReturn()
 
@@ -74,8 +61,9 @@ def chvis_tag():
 @validsign
 @validcall(2048)
 def info_tag():
-    t = Tag.objects(g.data['name'])
-    return trueReturn({'info':t.get_base_info()})
+    t = Tag.objects(g.data['name']).first()
+    if not t: return falseReturn(msg='无此标签')
+    return trueReturn(t.get_base_info())
 
 @handle_error
 @tag_blueprint.route('/ls', methods=['GET'])
