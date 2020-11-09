@@ -42,29 +42,22 @@ class Tag(SaveTimeBase):
                 last_modify=datetime.datetime.now()
             ).save()
 
-
-class Ariticle(SaveTimeBase):
+class Article(SaveTimeBase):
     title = StringField()
-    password = StringField(default='')
-    last_modify = DateTimeField()
-    create_datetime = DateTimeField()
+    source = StringField()
+    div = ReferenceField(Div)
+    author = StringField()
+    create_time = DateTimeField()
+    email = ListField(StringField())
+    status = StringField(default='储存库')
+    """[存储库, 回收站, 一审, 二审, 终审, 发布]"""
+    pin = BooleanField()
+    upload = BooleanField()
+    draft = BooleanField()
     writable = ListField(ReferenceField(User, reverse_delete_rule=4))
     readable = ListField(ReferenceField(User, reverse_delete_rule=4))
     tags = ListField(ReferenceField(Tag))
-    div = ReferenceField(Div)
     meta = {'allow_inheritance': True}
-    def retitle(self,new_title:str) -> self:
-        self.title = new_title
-        self.last_modify = datetime.datetime.now()
-        return self.save()
-
-    def set_password(self,password:str) -> self:
-        self.password = password
-        return self.save()
-
-    @staticmethod
-    def new_article(author: User):
-        return Ariticle(writable=[author],readable=[author],last_modify=datetime.datetime.now())
 
     def append_access(self, new_writables=[], new_readables=[]):
         for _ in new_writables:

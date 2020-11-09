@@ -28,6 +28,7 @@ class User(SaveTimeBase):
     email = StringField()
     status = StringField()
     last_ip = StringField()
+    last_login = DateTimeField(default=datetime.datetime.now())
     authority: INVISIBLE = IntField(default=0)
     # roles = db.ListField(db.ReferenceField(Role,reverse_delete_rule=4),default=[])
 

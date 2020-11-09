@@ -50,6 +50,10 @@ def signin_auth():
 
     if not user or not user.valid_password(password):
         return falseReturn(None, "用户名或密码有误")
+    user.modify(
+        last_ip=request.remote_addr,
+        last_login=datetime.datetime.now()
+    )
     return trueReturn({
         'user': user.get_base_info(),
         'token': generate_jwt(user),
