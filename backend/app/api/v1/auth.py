@@ -12,9 +12,7 @@ from mongoengine.queryset.visitor import Q
 from app.api import handle_error, validsign, verify_params
 from app.common.result import falseReturn, trueReturn
 from app.models.User import User
-from app.models.Domain import Domain
 from app.util.auth import generate_jwt, verify_jwt
-from app.util.sheet import sheet
 
 auth_blueprint = Blueprint('auth', __name__, url_prefix='/auth')
 """
@@ -47,7 +45,6 @@ def signin_auth():
     name = g.data.get("username", "").strip()
     password = g.data.get("password", "")
     user: User = User.objects(user_id=name).first()
-
     if not user or not user.valid_password(password):
         return falseReturn(None, "用户名或密码有误")
     user.modify(
@@ -69,7 +66,7 @@ def chinfo_auth():
         if k in modifiable:
             modify_keys[k] = v
     g.user.modify(**modify_keys)
-    g.user.last_ip = request.remote_addr()
+    g.user.last_ip = request.remote_addr
     g.user.save_changes()
     return trueReturn()
 

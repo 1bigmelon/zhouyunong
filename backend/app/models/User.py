@@ -2,7 +2,6 @@ import datetime
 import hashlib
 from app.models.UserBase import UserBase
 from app.models.Base import SaveTimeBase
-from app.models.Role import Role
 from mongoengine import *
 from app.models.Base import INVISIBLE
 from app import db
@@ -36,45 +35,20 @@ class User(SaveTimeBase):
         return self.password == encrypt(password)
 
     @staticmethod
-    def get_or_create(user_id): # 表格导入的时候防重
+    def get_or_create(user_id, **kwargs): # 表格导入的时候防重
         _t = User.objects(user_id=user_id)
         if any(_t):
             return _t.first()
         else:
             return User(
                 user_id=user_id,
-                last_modify=datetime.datetime.now()
+                last_modify=datetime.datetime.now(),
+                **kwargs
             ).save()
-    # def change_role(self,roles):
-    #     for p,i in enumerate(roles):
-    #         if not isinstance(i,Role):
-    #             roles[p] = Role.get_by_id(i)
-    #     self.roles = roles
-    #     return self.save()
 
-    # def max_permission(self) -> int:
-    #     mx = 0
-    #     for i in self.roles:
-    #         mx = max(mx,i.permission)
-    #     return mx
-
-    # def restrict_permission(self,permission:int) -> bool:
-    #     """
-    #     用来判断当前用户是否越权操作角色
-    #     目前是 O(当前用户角色数) 的
-    #     """
-    #     mx = 0
-    #     for i in self.roles:
-    #         mx = max(mx,i.permission)
-    #     return mx > permission
-
-    # def restrict_functions(self,functions:list) -> bool:
-    #     """
-    #     用来判断当前用户是否越权操作角色
-    #     目前是 O(当前用户角色数*功能数 + 目标角色功能数) 的？
-    #     """
-    #     self_functions = set()
-    #     for i in self.roles:
-    #         self_functions|=set(i.allow_functions)
-    #     return self_functions >= set(functions) or '*' in self_functions
-
+    # def get_base_info(self):
+    #     print(self._fields_ordered)
+    #     return dict(
+    #         [(k, v) for k, v in vars(self).items() if not get_type_hints(self).get(k, None) == INVISIBLE] +
+    #         [("id", str(self.id))]
+    #     )

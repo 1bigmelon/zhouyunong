@@ -8,8 +8,9 @@ class Base(Document):
     """每次都写get_base_info好烦"""
     meta = {'allow_inheritance': True}
     def get_base_info(self):
+        # print(vars(self))
         return dict(
-            [(k, v) for k, v in vars(self).items() if not get_type_hints(self).get(k, None) == INVISIBLE] +
+            [(k, getattr(self, k)) for k in self._fields_ordered if not get_type_hints(self).get(k, None) == INVISIBLE] +
             [("id", str(self.id))]
         )
 

@@ -29,7 +29,6 @@ def create_app() -> Flask:
     # 分配路由
     from app.util.GreenPrint import GreenPrint
     from app.api.v1.auth import auth_blueprint
-    from app.api.v1.domain import domain_blueprint
     from app.api.v1.user import user_blueprint
     from app.api.v1.initialize import initialize_blueprint
 
@@ -38,7 +37,6 @@ def create_app() -> Flask:
     # from app.api.v1.domain import domain
     api_v1 = GreenPrint('api', __name__, url_prefix='/api/v1')
     api_v1.register_blueprint(auth_blueprint)
-    api_v1.register_blueprint(domain_blueprint)
     api_v1.register_blueprint(user_blueprint)
     api_v1.register_blueprint(initialize_blueprint)
 
