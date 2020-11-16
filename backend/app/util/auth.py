@@ -1,5 +1,6 @@
 import jwt
 import time
+import datetime
 import traceback
 from app.common.result import falseReturn, trueReturn
 from flask import current_app
@@ -8,7 +9,7 @@ from app.models.User import User
 
 def generate_jwt(user):
     token_dict = {
-        'iat': time.time() + 60*60*24, # 1天
+        'iat': time.time(), # 1天
         'id': str(user.id)
     }
     return jwt.encode(token_dict,  # payload, 有效载体
@@ -19,9 +20,12 @@ def generate_jwt(user):
 def verify_jwt(token):
     try:
         payload = jwt.decode(token, current_app.config['JWT_SECRET'], algorithm=['HS256'])
-        if payload['iat'] < time.time():
+        if payload['iat'] < time.time() - 60*60*24:
             return None, "登入超时"
         user = User.objects(id=payload['id']).first()
+        print(payload['iat'], user.pw_updated.timestamp())
+        if payload['iat'] < user.pw_updated.timestamp():
+            return None, "密码已修改，请使用新密码重新登录"
         if not user:
             return None, "无此用户"
         return user, ""

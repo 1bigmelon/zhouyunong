@@ -21,6 +21,7 @@ class User(SaveTimeBase):
     name = StringField()
     user_id: INVISIBLE = StringField() # 登录凭据
     password: INVISIBLE = StringField()
+    pw_updated = DateTimeField(default=datetime.datetime(1926, 8, 17))
     role = StringField(default='游客')
     dep = StringField()
     contact = StringField()
