@@ -12,7 +12,7 @@ from mongoengine.queryset.visitor import Q
 from app.api import handle_error, validsign, verify_params, validcall
 from app.common.result import falseReturn, trueReturn
 from app.models.User import User
-from app.models.Tag import Tag
+from app.models.Article import Tag
 from app.util.auth import generate_jwt, verify_jwt, general_before_request
 
 tag_blueprint = Blueprint('tag', __name__, url_prefix='/tag')
@@ -22,52 +22,65 @@ def before_request():
     return general_before_request()
 
 @handle_error
-@tag_blueprint.route('/modify', methods=['POST'])
+@tag_blueprint.route('/new', methods=['POST'])
 @verify_params(params=['name', 'org', 'description'])
 @validsign
-@validcall(2048)
-def modify_tag():
-    t = Tag.get_or_create(g.data['name'])
-    t.org = g.data['org']
+@validcall(0x1110)
+def new_tag():
+    t = Tag(name=g.data['name'])
+    t.click = 0
+    t.org = Org.objects(id=g.data['org']).first()
     t.description = g.data['description']
+    t.status = True
+    t.save_changes()
+    return trueReturn()
+
+
+@handle_error
+@tag_blueprint.route('/modify', methods=['POST'])
+@validsign
+@validcall(0x1110)
+def modify_tag():
+    t = Tag.objects(id=g.data['name']).first()
+    modifiable = {
+        'name', 'description', 'status', 'org'
+    }
+    modify_keys = {}
+    for k, v in g.data.items():
+        if k in modifiable:
+            if k == 'org':
+                modify_keys[k] = Org.objects(id=v).first()
+            else:
+                modify_keys[k] = v
+
+    t.modify(**modify_keys)
     t.save_changes()
     return trueReturn()
 
 @handle_error
 @tag_blueprint.route('/remove', methods=['POST'])
-@verify_params(params=['name'])
+@verify_params(params=['id'])
 @validsign
-@validcall(2048)
+@validcall(0x1110)
 def remove_tag():
-    t = Tag.objects(g.data['name'])
+    t = Tag.objects(id=g.data['id']).first()
     if not t: return falseReturn(msg='无此标签')
     t.delete()
     return trueReturn()
 
 @handle_error
-@tag_blueprint.route('/chvis', methods=['POST'])
-@verify_params(params=['visible'])
-@validsign
-@validcall(2048)
-def chvis_tag():
-    t = Tag.objects(g.data['name'])
-    t.visible = g.data['visible']
-    t.save()
-    return trueReturn()
-
-@handle_error
 @tag_blueprint.route('/info', methods=['POST'])
-@verify_params(params=['name'])
+@verify_params(params=['id'])
 @validsign
-@validcall(2048)
+@validcall(0x1110)
 def info_tag():
-    t = Tag.objects(g.data['name']).first()
+    t = Tag.objects(id=g.data['id']).first()
     if not t: return falseReturn(msg='无此标签')
     return trueReturn(t.get_base_info())
 
 @handle_error
 @tag_blueprint.route('/ls', methods=['GET'])
 @validsign
-@validcall(2048)
+@validcall(0x1110)
 def ls_tag():
     return trueReturn({'tags':[i.get_base_info() for i in Tag.objects()]})

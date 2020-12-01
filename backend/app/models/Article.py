@@ -1,16 +1,16 @@
 from mongoengine import *
 from app.models.User import User
+from app.models.Org import Org
+from typing import List
 from app.models.Base import Base, SaveTimeBase
 import datetime
 
 class Div(SaveTimeBase):
     name = StringField()
     org = StringField()
-    subordinate = StringField()
+    status = BooleanField(default=True)
     description = StringField()
-    modifier = ReferenceField(User)
     click = IntField()
-    publish = BooleanField()
 
     @staticmethod
     def get_or_create(name):
@@ -21,15 +21,14 @@ class Div(SaveTimeBase):
             return Div(
                 name=name,
                 last_modify=datetime.datetime.now()
-            ).save()
+            ).save_changes()
 
 class Tag(SaveTimeBase):
     name = StringField()
     org = StringField()
     description = StringField()
     click = IntField()
-    visible = BooleanField()
-    publish = BooleanField()
+    status = BooleanField(default=True)
 
     @staticmethod
     def get_or_create(name):
@@ -40,40 +39,59 @@ class Tag(SaveTimeBase):
             return Tag(
                 name=name,
                 last_modify=datetime.datetime.now()
-            ).save()
+            ).save_changes()
+
+class Contrib(SaveTimeBase):
+    title = StringField()
+    author = StringField()
+    status = StringField(default="未审核")
+    create_time = DateTimeField()
+    contact = StringField()
+    org = ReferenceField(Org)
+
+    content = StringField()
+
+    def convert_to_article(self, div: Div, tags: List[Tag]):
+        a = Article(
+            title=self.title,
+            author=self.author,
+            create_time=self.create_time,
+            status="待一审",
+            org=self.org,
+            div=div,
+            tags=tags,
+            content=self.content,
+            contact=self.contact
+        )
+        a.save_changes()
+        self.delete()
+
+
 
 class Article(SaveTimeBase):
     title = StringField()
-    source = StringField()
-    div = ReferenceField(Div)
+    content = StringField()
+    div = ReferenceField(Div, reverse_delete_rule=2)
+    org = ReferenceField(Org, reverse_delete_rule=2)
     author = StringField()
     create_time = DateTimeField()
-    email = ListField(StringField())
+    email = StringField()
     status = StringField(default='储存库')
-    """[存储库, 回收站, 一审, 二审, 终审, 发布]"""
-    pin = BooleanField()
-    upload = BooleanField()
-    draft = BooleanField()
-    writable = ListField(ReferenceField(User, reverse_delete_rule=4))
-    readable = ListField(ReferenceField(User, reverse_delete_rule=4))
-    tags = ListField(ReferenceField(Tag))
-    meta = {'allow_inheritance': True}
+    """[储存库, 待一审, 待二审, 待终审, 待发布, 已发布]"""
+    pin = BooleanField(default=False)
+    tags = ListField(ReferenceField(Tag, reverse_delete_rule=4))
+    
+    @staticmethod
+    def search_visibles(**kwargs) -> list:
+        return [i for i in Article.objects(**kwargs) if i.is_me_visible()]
 
-    def append_access(self, new_writables=[], new_readables=[]):
-        for _ in new_writables:
-            self.update(add_to_set__writable=_)
-        for _ in new_readables:
-            self.update(add_to_set__readable=_)
-        return
+    def is_me_visible(self) -> bool:
+        s = self.status == '已发布' and self.div.status
+        if self.org: s = s and self.org.status
+        for i in self.tags: s = s and i.status
+        return s
 
-    def discard_access(self, ban_writables=[], ban_readables=[]):
-        for _ in ban_writables:
-            self.update(pull__writable=_)
-        for _ in ban_readables:
-            self.update(pull__readable=_)
-        return
+    
+    # meta = {'allow_inheritance': True}
 
-    def modify_access(self, new_writables=[], new_readables=[]):
-        self.writable = new_writables
-        self.readable = new_readables
-        return self.save()
+

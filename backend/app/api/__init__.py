@@ -7,7 +7,7 @@ def validsign(func):
     @wraps(func)
     def decorator(*args, **kwargs):
         if not g.user:
-            response = falseReturn(None, '此操作需要登陆', 401)
+            response = falseReturn(None, '此操作需要登陆;'+g.msg, 401)
             response.status_code = 401
             return response
         return func(*args, **kwargs)
@@ -17,7 +17,7 @@ def validcall(authority_threshold=0):
     def internal_validcall(func):
         @wraps(func)
         def decorator(*args, **kwargs):
-            if g.user.authority >= authority_threshold: # 懒人标记*
+            if g.user.authority & authority_threshold: # 懒人标记*
                 return func(*args, **kwargs)
             return falseReturn(None, f'没有使用{func.__name__}的权限', 401)
         return decorator

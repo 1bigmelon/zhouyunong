@@ -22,14 +22,18 @@ def verify_jwt(token):
         payload = jwt.decode(token, current_app.config['JWT_SECRET'], algorithm=['HS256'])
         if payload['iat'] < time.time() - 60*60*24:
             return None, "登入超时"
+        # print(payload['id'])
         user = User.objects(id=payload['id']).first()
-        print(payload['iat'], user.pw_updated.timestamp())
+        # print(user.get_base_info())
+        # print(payload['iat'])
+        # print(user.pw_updated.timestamp())
         if payload['iat'] < user.pw_updated.timestamp():
             return None, "密码已修改，请使用新密码重新登录"
         if not user:
             return None, "无此用户"
         return user, ""
     except:
+        traceback.print_exc()
         return None, "数据错误"
 
 def general_before_request():
@@ -41,7 +45,7 @@ def general_before_request():
         if Authorization:
             token = Authorization
             g.token = token
-            g.user, msg = verify_jwt(token)
+            g.user, g.msg = verify_jwt(token)
         else:
             pass
     except:

@@ -1,9 +1,9 @@
 import datetime
 import hashlib
-from app.models.UserBase import UserBase
 from app.models.Base import SaveTimeBase
 from mongoengine import *
 from app.models.Base import INVISIBLE
+from app.models.Org import Org
 from app import db
 
 def encrypt(s):
@@ -21,16 +21,17 @@ class User(SaveTimeBase):
     name = StringField()
     user_id: INVISIBLE = StringField() # 登录凭据
     password: INVISIBLE = StringField()
-    pw_updated = DateTimeField(default=datetime.datetime(1926, 8, 17))
-    role = StringField(default='游客')
-    dep = StringField()
+    pw_updated = DateTimeField(default=datetime.datetime(1996, 8, 17))
+    
+    org = ReferenceField(Org, reverse_delete_rule=2)
     contact = StringField()
     email = StringField()
-    status = StringField()
+    tel = StringField()
+    phone = StringField()
+    status = BooleanField(default=True)
     last_ip = StringField()
     last_login = DateTimeField(default=datetime.datetime.now())
     authority: INVISIBLE = IntField(default=0)
-    # roles = db.ListField(db.ReferenceField(Role,reverse_delete_rule=4),default=[])
 
     def valid_password(self, password):
         return self.password == encrypt(password)
@@ -47,9 +48,3 @@ class User(SaveTimeBase):
                 **kwargs
             ).save()
 
-    # def get_base_info(self):
-    #     print(self._fields_ordered)
-    #     return dict(
-    #         [(k, v) for k, v in vars(self).items() if not get_type_hints(self).get(k, None) == INVISIBLE] +
-    #         [("id", str(self.id))]
-    #     )
