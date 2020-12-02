@@ -11,11 +11,20 @@
       return {
         
       }
+    },
+    mounted() {
+      console.log('document.body.clientHeight: ', document.body.clientHeight);
+      console.log('document.body.clientWidth: ', document.body.clientWidth);
     }
   }
 </script>
 
 <style lang="scss">
+  #app {
+    height: 100%;
+    width: 100%;
+  }
+
   #nprogress {
     .bar {
       // TODO 修改loading bar颜色
