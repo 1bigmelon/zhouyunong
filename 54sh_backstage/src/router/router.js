@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
+import { Message } from 'ant-design-vue'
 
 // 屏蔽反复点击同一路由时的报错
 const originalPush = VueRouter.prototype.push
@@ -14,14 +15,7 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    redirect: () => {
-      /**
-       * TODO 验证token合法性
-       * 合法转至index
-       * 过期转至login
-       */
-      return '/login'
-    }
+    name: 'base'
   },
   {
     path: '/index',
@@ -29,12 +23,14 @@ const routes = [
     children: [
       {
         path: '',
+        name: 'index',
         component: () => import('../pages/index')
       }
     ]
   },
   {
     path: '/login',
+    name: 'login',
     component: () => import('../pages/login')
   },
   {
@@ -43,6 +39,7 @@ const routes = [
     children: [
       {
         path: 'newArticle',
+        name: 'newArticle',
         component: () => import('../pages/article/newArticle')
       }
     ]
@@ -78,18 +75,37 @@ const breadcrumbNames = {
 router.beforeEach((to, from, next) => {
   NProgress.start()
 
-  // 获取url分段数组
-  let breadcrumbs = to.fullPath.split('/')
-  breadcrumbs.shift()
-  
-  let breadcrumbRoutes = []
-  for (let item in breadcrumbNames) {
-    if (breadcrumbs.includes(item)) {
-      breadcrumbRoutes.push({ breadcrumbName: breadcrumbNames[item] })
-    }
+  if (to.name === 'login') {
+    next()
   }
-  router.app.$options.store.dispatch('setBreadcrumbs', breadcrumbRoutes)
-  next()
+  else {
+    // 判断token合法性
+    /**
+     * TODO 判断token合法性
+     */
+    if (localStorage.getItem('token')) {
+      next()
+    }
+    else {
+      if (to.name !== 'base') {
+        Message.error('身份已过期，请重新登录')
+      }
+      next('/login')
+    }
+
+    // 获取url分段数组
+    let breadcrumbs = to.fullPath.split('/')
+    breadcrumbs.shift()
+    
+    let breadcrumbRoutes = []
+    for (let item in breadcrumbNames) {
+      if (breadcrumbs.includes(item)) {
+        breadcrumbRoutes.push({ breadcrumbName: breadcrumbNames[item] })
+      }
+    }
+    router.app.$options.store.dispatch('setBreadcrumbs', breadcrumbRoutes)
+    next()
+  }
 })
 
 router.afterEach(() => {
