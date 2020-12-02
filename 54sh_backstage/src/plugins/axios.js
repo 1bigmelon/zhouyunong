@@ -3,11 +3,14 @@ import axios from 'axios'
 /**
  * TODO 配置baseURL
  */
-export const baseURL = 'http://47.115.90.131:10079/api/vi'
+export const baseURL = 'http://kyaru.dy1c.top:5000/api/v1'
 
 export const Axios = axios.create({
   baseURL: baseURL,
-  timeout: 10000
+  timeout: 10000,
+  headers: {
+    'Content-Type': 'application/json'
+  }
 })
 
 // 配置请求拦截器
