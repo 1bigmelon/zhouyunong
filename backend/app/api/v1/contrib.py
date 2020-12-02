@@ -24,13 +24,13 @@ def before_request():
 
 @handle_error
 @contrib_blueprint.route('/new', methods=['POST'])
-@verify_params(params=['author', 'title', 'contact', 'content', 'org'])
+@verify_params(params=['author', 'title', 'email', 'content', 'org'])
 def new_contrib():
-    o = Org.objects(name=g.data['org']).first()
+    o = Org.objects(id=g.data['org']).first()
     c = Contrib(
         author=g.data['author'],
         title=g.data['title'],
-        contact=g.data['contact'],
+        email=g.data['email'],
         content=g.data['content'],
         org=o,
         create_time=datetime.datetime.now()
@@ -44,8 +44,19 @@ def new_contrib():
 def deny_contrib():
     c = Contrib.objects(id=g.data['id']).first()
     if not c: return falseReturn(msg='投稿不存在')
-    c.status = False
+    c.status = '未通过'
     c.save_changes()
+    return trueReturn()
+
+@handle_error
+@contrib_blueprint.route('/remove', methods=['POST'])
+@verify_params(params=['id'])
+@validsign
+@validcall(0x1110)
+def remove_contrib():
+    c = Contrib.objects(id=g.data['id']).first()
+    if not c: return falseReturn(msg='投稿不存在')
+    c.delete()
     return trueReturn()
 
 @handle_error
@@ -55,6 +66,7 @@ def deny_contrib():
 def accept_contrib():
     c = Contrib.objects(id=g.data['id']).first()
     if not c: return falseReturn(msg='投稿不存在')
+    if c.status == '未通过': return falseReturn(msg='不能操作未通过的投稿')
     t = []
     for i in g.data['tags']:
         t.append(Tag.objects(id=i).first())
@@ -63,13 +75,13 @@ def accept_contrib():
     return trueReturn()
 
 @handle_error
-@contrib_blueprint.route('/chinfo', methods=['POST'])
+@contrib_blueprint.route('/modify', methods=['POST'])
 @verify_params(params=['id'])
 @validsign
 def chinfo_contrib():
     c = Contrib.objects(id=g.data['id']).first()
     modifiable = {
-        'author', 'title', 'contact', 'content', 'org'
+        'author', 'title', 'email', 'content', 'org'
     }
     modify_keys = {}
     for k, v in g.data.items():
@@ -86,10 +98,9 @@ def chinfo_contrib():
 @handle_error
 @contrib_blueprint.route('/search', methods=['POST'])
 @validsign
-@validcall(0x1110)
 def search_contrib():
     sd = {
-        'author', 'title', 'status'
+        'author', 'title', 'status', 'content'
     }
     begin = datetime.datetime.min
     end = datetime.datetime.max
@@ -99,10 +110,17 @@ def search_contrib():
     ks = {}
     for k, v in g.data.items():
         if k in sd:
-            ks[k] = v
+            if k == 'author':
+                ks['author__icontains']=v
+            elif k == 'title':
+                ks['title__icontains']=v
+            elif k == 'content':
+                ks['content__icontains']=v
+            else:
+                ks[k] = v
 
-    c = Contrib.objects(ks)
-    return trueReturn({'contribs':[i.get_base_info() for i in c if begin <= c.create_time <= end]})
+    c = Contrib.objects(**ks)
+    return trueReturn({'contribs':[i.get_base_info() for i in c if begin <= i.create_time <= end]})
 
 
 @handle_error
@@ -112,7 +130,7 @@ def ls_contrib():
     c = Contrib.objects()
     new_ctr = 0
     for i in c:
-        if c.create_time.timetuple() >= datetime.datetime.now().date().timetuple():
+        if i.create_time.timetuple() >= datetime.datetime.now().date().timetuple():
             new_ctr += 1
     return trueReturn({
         'contribs':[i.get_base_info() for i in c],
@@ -126,4 +144,4 @@ def ls_contrib():
 def info_contrib():
     c = Contrib.objects(id=g.data['id']).first()
     if not c: return falseReturn(msg='无此投稿')
-    return trueReturn(c.get_base_info())
+    return trueReturn(c.get_all_info())

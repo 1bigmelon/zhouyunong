@@ -46,10 +46,10 @@ class Contrib(SaveTimeBase):
     author = StringField()
     status = StringField(default="未审核")
     create_time = DateTimeField()
-    contact = StringField()
+    email = StringField()
     org = ReferenceField(Org, reverse_delete_rule=2)
 
-    content = StringField()
+    content:INVISIBLE = StringField()
 
     def convert_to_article(self, div: Div, tags: List[Tag]):
         a = Article(
@@ -61,7 +61,7 @@ class Contrib(SaveTimeBase):
             div=div,
             tags=tags,
             content=self.content,
-            contact=self.contact
+            email=self.email
         )
         a.save_changes()
         self.delete()
