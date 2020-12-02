@@ -117,7 +117,7 @@ def search_user():
             if k == 'role':
                 ks['authority'] = auth_dict[v]
             elif k == 'org':
-                ks['org'] = Org.objects(name=v).first()
+                ks['org'] = Org.objects(id=v).first()
             else:
                 ks[k] = v
 

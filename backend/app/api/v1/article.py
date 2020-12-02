@@ -27,7 +27,6 @@ def before_request():
     'title',
     'div',
     'author',
-    'div',
     'tags',
     'email',
     'content'
@@ -41,7 +40,7 @@ def new_article():
         author=g.data['author']
     )
     article.tags = [Tag.objects(id=i).first() for i in g.data['tags']]
-    article.div = Div.objects(id=g.data['div'])
+    article.div = Div.objects(id=g.data['div']).first()
     if 'org' in g.data:
         article.org = Org.objects(id=g.data['org']).first()
     article.create_time = datetime.datetime.now()
@@ -52,7 +51,6 @@ def new_article():
 @article_blueprint.route('/modify', methods=['POST'])
 @verify_params(params=['id'])
 @validsign
-@validcall(0x1110)
 def modify_article():
     a = Article.objects(id=g.data['id']).first()
     modifiable = {
@@ -80,7 +78,9 @@ def modify_article():
 @validsign
 def forward_article():
     a = Article.objects(id=g.data['id']).first()
-    if a.status == '待一审' and g.user.authority & 0x10:
+    if a.status == '储存库':
+        return falseReturn(msg='文章在储存库中，请先恢复')
+    elif a.status == '待一审' and g.user.authority & 0x10:
         a.status = '待二审'
     elif a.status == '待二审' and g.user.authority & 0x100:
         a.status = '待终审'
@@ -170,7 +170,9 @@ def search_article():
             if k == 'title':
                 ks['title__icontains'] = v
             elif k == 'org':
-                ks['org'] = Org.objects(name=v).first()
+                ks['org'] = Org.objects(id=v).first()
+            elif k == 'div':
+                ks['div'] = Div.objects(id=v).first()
             elif k == 'content':
                 ks['content__icontains'] = v
             elif k == 'tags':
@@ -182,6 +184,24 @@ def search_article():
             i.get_base_info() for i in Article.objects(**ks)
         ]
     })
+
+@handle_error
+@article_blueprint.route('/info', methods=['POST'])
+@verify_params(params=['id'])
+@validsign
+def info_article():
+    a = Article.objects(id=g.data['id']).first()
+    if not a: return falseReturn(msg='无此文章')
+    return trueReturn(a.get_all_info())
+
+@handle_error
+@article_blueprint.route('/detail', methods=['POST'])
+@verify_params(params=['id'])
+def detail_article():
+    a = Article.objects(id=g.data['id']).first()
+    if not a: return falseReturn(msg='无此文章')
+    if not a.is_me_visible(): return falseReturn(msg='文章已被设为隐藏')
+    return trueReturn(a.get_all_info())
 
 @handle_error
 @article_blueprint.route('/show', methods=['POST'])
@@ -196,7 +216,9 @@ def show_article():
             if k == 'title':
                 ks['title__icontains'] = v
             elif k == 'org':
-                ks['org'] = Org.objects(name=v).first()
+                ks['org'] = Org.objects(id=v).first()
+            elif k == 'div':
+                ks['div'] = Div.objects(id=v).first()
             elif k == 'content':
                 ks['content__icontains'] = v
             elif k == 'tags':

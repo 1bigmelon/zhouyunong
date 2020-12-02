@@ -12,7 +12,7 @@ from mongoengine.queryset.visitor import Q
 from app.api import handle_error, validsign, verify_params, validcall
 from app.common.result import falseReturn, trueReturn
 from app.models.User import User
-from app.models.Article import Tag
+from app.models.Article import Tag, Org
 from app.util.auth import generate_jwt, verify_jwt, general_before_request
 
 tag_blueprint = Blueprint('tag', __name__, url_prefix='/tag')
@@ -41,7 +41,7 @@ def new_tag():
 @validsign
 @validcall(0x1110)
 def modify_tag():
-    t = Tag.objects(id=g.data['name']).first()
+    t = Tag.objects(id=g.data['id']).first()
     modifiable = {
         'name', 'description', 'status', 'org'
     }

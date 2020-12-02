@@ -2,12 +2,12 @@ from mongoengine import *
 from app.models.User import User
 from app.models.Org import Org
 from typing import List
-from app.models.Base import Base, SaveTimeBase
+from app.models.Base import Base, SaveTimeBase, INVISIBLE
 import datetime
 
 class Div(SaveTimeBase):
     name = StringField()
-    org = StringField()
+    org = ReferenceField(Org, reverse_delete_rule=2)
     status = BooleanField(default=True)
     description = StringField()
     click = IntField()
@@ -25,7 +25,7 @@ class Div(SaveTimeBase):
 
 class Tag(SaveTimeBase):
     name = StringField()
-    org = StringField()
+    org = ReferenceField(Org, reverse_delete_rule=2)
     description = StringField()
     click = IntField()
     status = BooleanField(default=True)
@@ -47,7 +47,7 @@ class Contrib(SaveTimeBase):
     status = StringField(default="未审核")
     create_time = DateTimeField()
     contact = StringField()
-    org = ReferenceField(Org)
+    org = ReferenceField(Org, reverse_delete_rule=2)
 
     content = StringField()
 
@@ -70,7 +70,7 @@ class Contrib(SaveTimeBase):
 
 class Article(SaveTimeBase):
     title = StringField()
-    content = StringField()
+    content:INVISIBLE = StringField() # 节约流量
     div = ReferenceField(Div, reverse_delete_rule=2)
     org = ReferenceField(Org, reverse_delete_rule=2)
     author = StringField()
@@ -87,8 +87,10 @@ class Article(SaveTimeBase):
 
     def is_me_visible(self) -> bool:
         s = self.status == '已发布' and self.div.status
+        # print(s)
         if self.org: s = s and self.org.status
         for i in self.tags: s = s and i.status
+        # print(s)
         return s
 
     

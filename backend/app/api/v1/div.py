@@ -63,7 +63,7 @@ def modify_div():
 @validsign
 @validcall(0x1110)
 def remove_div():
-    d = Div.objects(g.data['id']).first()
+    d = Div.objects(id=g.data['id']).first()
     if not d: return falseReturn(msg='无此分类')
     d.delete()
     return trueReturn()
@@ -74,7 +74,7 @@ def remove_div():
 @validsign
 @validcall(0x1110)
 def info_div():
-    d = Div.objects(g.data['id']).first()
+    d = Div.objects(id=g.data['id']).first()
     if not d: return falseReturn(msg='无此分类')
     return trueReturn(d.get_base_info())
 
