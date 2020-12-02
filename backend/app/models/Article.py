@@ -48,7 +48,6 @@ class Contrib(SaveTimeBase):
     create_time = DateTimeField()
     email = StringField()
     org = ReferenceField(Org, reverse_delete_rule=2)
-
     content:INVISIBLE = StringField()
 
     def convert_to_article(self, div: Div, tags: List[Tag]):
@@ -75,6 +74,7 @@ class Article(SaveTimeBase):
     org = ReferenceField(Org, reverse_delete_rule=2)
     author = StringField()
     create_time = DateTimeField()
+    click = IntField(default=0)
     email = StringField()
     status = StringField(default='储存库')
     """[储存库, 待一审, 待二审, 待终审, 待发布, 已发布]"""

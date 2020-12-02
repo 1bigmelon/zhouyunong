@@ -145,3 +145,10 @@ def info_contrib():
     c = Contrib.objects(id=g.data['id']).first()
     if not c: return falseReturn(msg='无此投稿')
     return trueReturn(c.get_all_info())
+
+# @handle_error
+# @contrib_blueprint.route('/rank', methods=['GET'])
+# def rank_contrib():
+#     c = Contrib.objects(id=g.data['id']).first()
+#     if not c: return falseReturn(msg='无此投稿')
+#     return trueReturn(c.get_all_info())

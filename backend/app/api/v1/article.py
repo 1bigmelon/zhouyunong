@@ -201,6 +201,13 @@ def detail_article():
     a = Article.objects(id=g.data['id']).first()
     if not a: return falseReturn(msg='无此文章')
     if not a.is_me_visible(): return falseReturn(msg='文章已被设为隐藏')
+    a.click += 1
+    for i in a.tags:
+        i.click += 1
+        i.save()
+    a.div.click += 1
+    a.div.save()
+    a.save()
     return trueReturn(a.get_all_info())
 
 @handle_error
