@@ -15,11 +15,11 @@ import router from './router/router'
 
 // ant design vue
 import {
-  Message, Icon, Avatar, Dropdown, Button,
-  Breadcrumb, Input
+  Message, Icon, Avatar, Input, Button
 } from 'ant-design-vue'
-Vue.use(Message).use(Icon).use(Avatar).use(Dropdown).use(Button)
-   .use(Breadcrumb).use(Input)
+Vue.use(Icon).use(Avatar).use(Input).use(Button)
+
+Vue.prototype.$message = Message
 
 // MainLayout
 import shLayout from './layouts/MainLayout'
