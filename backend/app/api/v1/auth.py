@@ -11,10 +11,8 @@ from mongoengine.queryset.visitor import Q
 
 from app.api import handle_error, validsign, verify_params
 from app.common.result import falseReturn, trueReturn
-from app.models.User import User
-from app.models.Domain import Domain
-from app.util.auth import generate_jwt, verify_jwt
-from app.util.sheet import sheet
+from app.models.User import User, encrypt
+from app.util.auth import generate_jwt, verify_jwt, general_before_request
 
 auth_blueprint = Blueprint('auth', __name__, url_prefix='/auth')
 """
@@ -25,60 +23,68 @@ auth_blueprint = Blueprint('auth', __name__, url_prefix='/auth')
 
 @auth_blueprint.before_request
 def before_request():
-    try:
-        if request.get_data():
-            g.data = request.get_json(silent=True)
-        Authorization = request.headers.get('Authorization', None)
-        print(Authorization)
-        if Authorization:
-            token = Authorization
-            g.token = token
-            g.user, msg = verify_jwt(token)
-        else:
-            pass
-    except:
-        traceback.print_exc()
-        return falseReturn(None, '数据错误')
+    general_before_request()
 
 
 @handle_error
 @auth_blueprint.route('/signin', methods=['POST'])
-def signin():
+def signin_auth():
     name = g.data.get("username", "").strip()
     password = g.data.get("password", "")
-    user = User.objects(user_id=name).first()
-
+    user: User = User.objects(user_id=name).first()
     if not user or not user.valid_password(password):
         return falseReturn(None, "用户名或密码有误")
+    if not user.status:
+        return falseReturn(msg='用户已被停用，请联系管理员')
+    if user.org and not user.org.status:
+        return falseReturn(msg='该用户所属组织已被停用，请联系管理员')
+    user.modify(
+        last_ip=request.remote_addr,
+        last_login=datetime.datetime.now()
+    )
     return trueReturn({
         'user': user.get_base_info(),
         'token': generate_jwt(user),
     })
 
 @handle_error
-@auth_blueprint.route('/rename', methods=['POST'])
-@verify_params(params=['name'])
+@auth_blueprint.route('/chinfo', methods=['POST'])
 @validsign
-def rename_self():
-    g.user.rename(g.data['name'])
+def chinfo_auth():
+    modifiable = {
+        'name', 'tel', 'contact', 'email',
+        'phone', 'org'
+    }
+    modify_keys = {}
+    for k, v in g.data.items():
+        if k in modifiable:
+            if k == 'org':
+                modify_keys[k] = Org.objects(id=v).first()
+            else:
+                modify_keys[k] = v
+    g.user.modify(**modify_keys)
+    g.user.last_ip = request.remote_addr
+    g.user.save_changes()
     return trueReturn()
 
 @handle_error
 @auth_blueprint.route('/verify', methods=['GET'])
 @validsign
-def verify_self():
+def verify_auth():
     return trueReturn(g.user.get_base_info())
 
 @handle_error
-@auth_blueprint.route('/changepassword', methods=['POST'])
+@auth_blueprint.route('/chpw', methods=['POST'])
 @validsign
-def changepassword():
+def chpw_auth():
     old = g.data.get("old", "")
     password = g.data.get("password", "")
-    user = User.objects().first()
+    user: User = User.objects().first()
     if not user or not user.valid_password(old):
-        return falseReturn(None, "旧密码不匹配")
-    user.set_password(password)
+        return falseReturn(msg="旧密码不匹配")
+    user.password = encrypt(password)
+    user.pw_updated = datetime.datetime.now()
+    user.save_changes()
     return trueReturn({
         'user': user.get_base_info(),
         'token': generate_jwt(user)
