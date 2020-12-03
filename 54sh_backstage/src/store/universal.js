@@ -1,16 +1,23 @@
 const state = {
-  breadcrumbs: []
+  selectedItemName: 'index',
+  contentTitle: ''
 }
 
 const mutations = {
-  setBreadcrumbs(state, newBreadcrumb) {
-    state.breadcrumbs = newBreadcrumb
+  setSelectedItemName(state, newVal) {
+    state.selectedItemName = newVal
+  },
+  setContentTitle(state, newVal) {
+    state.contentTitle = newVal
   }
 }
 
 const actions = {
-  setBreadcrumbs({ commit }, newBreadcrumb) {
-    commit('setBreadcrumbs', newBreadcrumb)
+  setSelectedItemName({ commit }, newVal) {
+    commit('setSelectedItemName', newVal)
+  },
+  setContentTitle({ commit }, newVal) {
+    commit('setContentTitle', newVal)
   }
 }
 
