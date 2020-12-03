@@ -27,6 +27,9 @@
       loginBtnHdl() {
         // this.$router.push('/')
         this.login(this.credentials)
+          .then(() => {
+            this.$message.success('登录成功')
+          })
       }
     }
   }
