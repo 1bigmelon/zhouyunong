@@ -15,7 +15,8 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    name: 'base'
+    name: 'base',
+    redirect: () => { return '/index' }
   },
   {
     path: '/index',
@@ -38,20 +39,41 @@ const routes = [
     component: () => import('../layouts/MainLayout'),
     children: [
       {
-        path: 'newArticle',
+        path: 'new',
         name: 'newArticle',
         component: () => import('../pages/article/newArticle')
+      },
+      {
+        path: 'review',
+        name: 'review',
+        component: () => import('../pages/article/review')
+      },
+      {
+        path: 'manage',
+        name: 'manageArticle',
+        component: () => import('../pages/article/manageArticle')
       }
+    ]
+  },
+  {
+    path: '/category',
+    component: () => import('../layouts/MainLayout'),
+    children: [
+
     ]
   },
   {
     path: '/tag',
     component: () => import('../layouts/MainLayout'),
     children: [
-      {
-        path: 'newTag',
-        component: () => import ('../pages/tag/newTag')
-      }
+
+    ]
+  },
+  {
+    path: '/system',
+    component: () => import('../layouts/MainLayout'),
+    children: [
+
     ]
   }
 ]
@@ -64,12 +86,11 @@ const routerConfig = {
 
 let router = new VueRouter(routerConfig)
 
-const breadcrumbNames = {
+const contentTitleMap = {
   'index': '主页',
-  'article': '文章管理',
   'newArticle': '新建文章',
-  'tag': '标签管理',
-  'newTag': '新建标签'
+  'review': '文章审核',
+  'manageArticle': '文章管理'
 }
 
 router.beforeEach((to, from, next) => {
@@ -93,17 +114,7 @@ router.beforeEach((to, from, next) => {
       next('/login')
     }
 
-    // 获取url分段数组
-    let breadcrumbs = to.fullPath.split('/')
-    breadcrumbs.shift()
-    
-    let breadcrumbRoutes = []
-    for (let item in breadcrumbNames) {
-      if (breadcrumbs.includes(item)) {
-        breadcrumbRoutes.push({ breadcrumbName: breadcrumbNames[item] })
-      }
-    }
-    router.app.$options.store.dispatch('setBreadcrumbs', breadcrumbRoutes)
+    router.app.$options.store.dispatch('setContentTitle', contentTitleMap[to.name])
     next()
   }
 })
