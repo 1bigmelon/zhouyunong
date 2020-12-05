@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div class="side-bar-box">
+    <aside class="side-bar-box">
       <div class="side-bar-header">
         <div class="title-box">
           <i class="icon"></i>
@@ -37,6 +37,12 @@
               icon="container"
               name="manageArticle"
               to="/article/manage"
+            />
+            <menu-item
+              text="查看投稿"
+              icon="inbox"
+              name="manageContribution"
+              to="/article/contribution"
             />
           </div>
         </div>
@@ -104,30 +110,43 @@
               text="退出登录"
               icon="export"
               name="logout"
+              @click="logout"
             />
           </div>
         </div>
       </div>
-    </div>
+    </aside>
     <div class="main">
-      <div class="header-box">
+      <header class="header-box">
         <div class="fold-box">
           <a-icon type="menu-fold" style="font-size: 1.1rem;"/>
         </div>
         <div class="user-box">
-          <a-avatar icon="user"/>
-          <span>测试名字</span>
-          <a-icon type="caret-down"/>
+          <div class="dropdown-box">
+            <div class="info-box">
+              <a-avatar icon="user"/>
+              <span style="cursor: default;">测试名字</span>
+              <a-icon type="caret-down" style="font-size: .8rem;"/>
+            </div>
+            <div class="dropdown">
+              <div class="dropdown-item">
+                <div class="dropdown-content" @click="logout">
+                  <a-icon type="export"/>
+                  <span>退出登录</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-      <div class="content-box">
-        <div class="content-title" v-if="ifShowTitleBar">
+      </header>
+      <main class="content-box">
+        <div class="content-title" v-if="showTitleBar">
           <span>{{ contentTitle }}</span>
         </div>
         <div class="content">  
           <router-view></router-view>
         </div>
-      </div>
+      </main>
     </div>
   </div>
 </template>
@@ -140,10 +159,15 @@ export default {
   name: 'MainLayout',
   data() {
     return {
-      ifShowTitleBar: true
+      showTitleBar: true
     }
   },
   methods: {
+    logout() {
+      localStorage.removeItem('token')
+      this.$router.push('/login')
+      this.$message.success('已退出登录')
+    }
   },
   components: {
     'menu-item': MenuItem
@@ -153,11 +177,11 @@ export default {
   },
   watch: {
     selectedItemName(newVal) {
-      this.ifShowTitleBar = (newVal !== 'index')
+      this.showTitleBar = (newVal !== 'index')
     }
   },
   mounted() {
-    this.ifShowTitleBar = (this.selectedItemName !== 'index')
+    this.showTitleBar = (this.selectedItemName !== 'index')
   }
 }
 </script>
@@ -186,8 +210,8 @@ export default {
       .side-bar-header {
         height: 3.8rem;
         width: 100%;
-        background-color: rgb(127, 99, 244);
-        box-shadow: 0 0 .5px .5px rgb(127, 99, 244);
+        background-color: $theme-color;
+        box-shadow: 0 0 .5px .5px $theme-color;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -222,6 +246,7 @@ export default {
         height: calc(100% - 4rem);
         width: 100%;
         padding-top: .5rem;
+        padding-bottom: 1rem;
 
         .side-bar-title {
           height: 2rem;
@@ -240,7 +265,6 @@ export default {
     .main {
       min-height: 100%;
       width: 100%;
-      z-index: -1;
 
       .header-box {
         height: 3.8rem;
@@ -250,20 +274,69 @@ export default {
         position: relative;
 
         .user-box {
-          height: 2rem;
           width: 10rem;
           display: flex;
           align-items: center;
           position: absolute;
-          right: 1rem;
+          right: 2rem;
+          top: 1rem;
 
-          span:nth-child(2) {
-            height: 100%;
+          .dropdown-box {
             font-size: 1rem;
-            padding-left: .8rem;
-            padding-right: .5rem;
-            line-height: 1.9rem;
+            width: 100%;
+            position: relative;
+
+            .info-box {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              padding-bottom: .5rem;
+
+              span:nth-child(2) {
+                height: 100%;
+                padding-left: .8rem;
+                padding-right: .5rem;
+                line-height: 1.9rem;
+              }
+            }
+
+            &:hover .dropdown {
+              display: block;
+            }
+
+            .dropdown {
+              width: 100%;
+              background-color: #FFF;
+              border-radius: 7px;
+              box-shadow: 1px 1.5px 10px -5px $theme-color;
+              padding: .5rem 0;
+              display: none;
+              
+              .dropdown-item {
+                height: 2rem;
+                display: flex;
+                align-items: center;
+                transition: background-color linear .15s;
+
+                &:hover {
+                  background-color: rgb(242, 240, 254);
+                  transition: background-color linear .15s;
+                  cursor: pointer;
+                  color: $theme-color; 
+                }
+
+                .dropdown-content {
+                  margin-left: 1.5rem;
+                  font-size: .9rem;
+
+                  span {
+                    padding-left: 1rem;
+                  }
+                }
+              }
+            }
           }
+
         }
 
         .fold-box {
@@ -293,7 +366,7 @@ export default {
         .content {
           min-height: calc(100% - 3rem);
           width: 100%;
-          padding: 1rem 1rem;
+          padding: 2rem;
         }
       }
     }
