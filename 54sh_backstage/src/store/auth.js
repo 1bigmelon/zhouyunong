@@ -4,7 +4,7 @@ const state = {
   userInfo: {
     id: '',
     name: '',
-    username: ''
+    IP: ''
   },
   isLogin: false
 }
@@ -23,16 +23,23 @@ const actions = {
     commit('setIsLogin', true)
     return context.$api.login(credentials)
       .then((res) => {
+        console.log('res: ', res);
         if (res.data.status) {
           localStorage.setItem('token', res.data.data.token)
-          const { id, name, user_id } = res.data.data.user
+          const { id, name, last_ip } = res.data.data.user
           commit('setUserInfo', {
             id,
             name,
-            username: user_id
+            IP: last_ip
           })
           context.$router.push('/index')
         }
+        else {
+          return Promise.reject(res.data.msg)
+        }
+      })
+      .catch((err) => {
+        return Promise.reject(err)
       })
   }
 }
