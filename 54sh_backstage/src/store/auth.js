@@ -1,4 +1,5 @@
-import context from '../main'
+/* eslint-disable camelcase */
+import context from '@/main'
 
 const state = {
   userInfo: {
@@ -19,20 +20,34 @@ const mutations = {
 }
 
 const actions = {
+  setUserInfo({ commit }, newVal) {
+    commit('setUserInfo', newVal)
+  },
   login({ commit }, credentials) {
     commit('setIsLogin', true)
     return context.$api.login(credentials)
       .then((res) => {
-        console.log('res: ', res);
         if (res.data.status) {
           localStorage.setItem('token', res.data.data.token)
           const { id, name, last_ip } = res.data.data.user
-          commit('setUserInfo', {
-            id,
-            name,
-            IP: last_ip
-          })
-          context.$router.push('/index')
+          const userInfo = { id, name, IP: last_ip }
+          localStorage.setItem('userInfo', JSON.stringify(userInfo))
+          commit('setUserInfo', userInfo)
+          return Promise.resolve(res)
+        }
+        else {
+          return Promise.reject(res.data.msg)
+        }
+      })
+      .catch((err) => {
+        return Promise.reject(err)
+      })
+  },
+  verifyToken() {
+    return context.$api.verifyToken()
+      .then((res) => {
+        if (res.data.status) {
+          return Promise.resolve(res)
         }
         else {
           return Promise.reject(res.data.msg)
