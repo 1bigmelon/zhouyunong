@@ -1,21 +1,16 @@
 <template>
   <div class="data-box--container">
-    <div class="data-box--icon-box">
+    <div class="icon-box">
       <a-icon :type="icon" style="font-size: 1.5rem;"></a-icon>
     </div>
-    <div class="data-box--title">{{ title }}</div>
-    <div class="data-box--value">{{ value }}</div>
+    <div class="title">{{ title }}</div>
+    <div class="value">{{ value }}</div>
   </div>
 </template>
 
 <script>
 export default {
   name: 'DataBox',
-  data() {
-    return {
-
-    }
-  },
   props: {
     icon: {
       type: String,
@@ -29,27 +24,30 @@ export default {
       type: Number,
       default: -1
     }
+  },
+  data() {
+    return {
+
+    }
   }
 }
 </script>
 
 <style lang="scss" scoped>
   .data-box--container {
+    @extend .component;
+
     width: 11rem;
-    background-color: #fff;
-    box-shadow: 2px 2px 10px -3px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    padding: 1rem 1.2rem;
     transition: all .2s ease;
     text-align: center;
-    
+
     &:hover {
       cursor: pointer;
       color: $theme-color;
       transition: all .2s ease;
     }
 
-    .data-box--icon-box {
+    .icon-box {
       height: 3rem;
       width: auto;
       position: relative;
@@ -74,15 +72,14 @@ export default {
       }
     }
 
-    .data-box--title {
+    .title {
       margin-top: .5rem;
       font-size: .9rem;
     }
 
-    .data-box--value {
-      font-size: 2rem;
+    .value {
+      font-size: 1.5rem;
       font-weight: bold;
-      height: 2.5rem;
     }
   }
 </style>
