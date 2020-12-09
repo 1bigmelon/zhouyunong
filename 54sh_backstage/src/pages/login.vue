@@ -5,13 +5,13 @@
         <span>升华网管理后台登录</span>
       </div>
       <div class="input-box">
-        <input type="text" required class="input" title="" v-model="credentials.username" />
+        <input v-model="credentials.username" type="text" required class="input" title="" />
         <a-icon type="user" class="prefix-icon" />
         <div class="underline"></div>
         <label>用户名</label>
       </div>
       <div class="input-box">
-        <input type="password" required class="input" title="" v-model="credentials.password" />
+        <input v-model="credentials.password" type="password" required class="input" title="" />
         <a-icon type="key" class="prefix-icon" />
         <div class="underline"></div>
         <label>密码</label>
@@ -27,46 +27,47 @@
 </template>
 
 <script>
-  import { mapActions } from 'vuex'
+import { mapActions } from 'vuex'
 
-  export default {
-    name: '',
-    data() {
-      return {
-        credentials: {
-          username: 'DogAdmin',
-          password: '1145141919810'
-        },
-        logining: false
-      }
-    },
-    methods: {
-      ...mapActions(['login']),
+export default {
+  name: 'Login',
+  data() {
+    return {
+      credentials: {
+        username: 'DogAdmin',
+        password: '1145141919810'
+      },
+      logining: false
+    }
+  },
+  methods: {
+    ...mapActions(['login']),
 
-      loginBtnHdl() {
-        if (this.credentials.username === '') {
-          this.$message.error('请输入用户名')
-          return
-        }
-        if (this.credentials.password === '') {
-          this.$message.error('请输入密码')
-          return
-        }
-        
-        this.logining = true
-        this.login(this.credentials)
-          .then(() => {
-            this.$message.success('登录成功')
-          })
-          .catch((err) => {
-            this.$message.error(err.data.msg)
-          })
-          .finally(() => {
-            this.logining = false
-          })
+    loginBtnHdl() {
+      if (this.credentials.username === '') {
+        this.$message.error('请输入用户名')
+        return
       }
+      if (this.credentials.password === '') {
+        this.$message.error('请输入密码')
+        return
+      }
+
+      this.logining = true
+      this.login(this.credentials)
+        .then(() => {
+          this.$message.success('登录成功')
+          this.$router.push('/index')
+        })
+        .catch((err) => {
+          this.$message.error(err.data.msg)
+        })
+        .finally(() => {
+          this.logining = false
+        })
     }
   }
+}
 </script>
 
 <style lang="scss" scoped>

@@ -84,7 +84,7 @@ const routerConfig = {
   base: '/manage'
 }
 
-let router = new VueRouter(routerConfig)
+const router = new VueRouter(routerConfig)
 
 const contentTitleMap = {
   'index': '主页',
