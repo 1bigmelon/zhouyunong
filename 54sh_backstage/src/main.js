@@ -5,7 +5,7 @@ import App from './App.vue'
 import axiosConfig from './plugins/axios'
 import APIConfig from './plugins/api'
 Vue.use(axiosConfig)
-   .use(APIConfig)
+  .use(APIConfig)
 
 // dependencies
 import Vuex from 'vuex'
@@ -15,9 +15,9 @@ import router from './router/router'
 
 // ant design vue
 import {
-  Message, Icon, Avatar, Input, Button
+  Message, Icon, Avatar, Input, Button, Table
 } from 'ant-design-vue'
-Vue.use(Icon).use(Avatar).use(Input).use(Button)
+Vue.use(Icon).use(Avatar).use(Input).use(Button).use(Table)
 
 Vue.prototype.$message = Message
 
