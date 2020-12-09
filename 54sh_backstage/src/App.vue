@@ -5,18 +5,26 @@
 </template>
 
 <script>
-  export default {
-    name: '',
-    data() {
-      return {
-        
-      }
-    },
-    mounted() {
-      console.log('document.body.clientHeight: ', document.body.clientHeight);
-      console.log('document.body.clientWidth: ', document.body.clientWidth);
+import { mapActions } from 'vuex'
+export default {
+  name: '',
+  data() {
+    return {
+
     }
+  },
+  mounted() {
+    console.log('document.body.clientHeight: ', document.body.clientHeight)
+    console.log('document.body.clientWidth: ', document.body.clientWidth)
+
+    if (localStorage.getItem('userInfo')) {
+      this.setUserInfo(JSON.parse(localStorage.getItem('userInfo')))
+    }
+  },
+  methods: {
+    ...mapActions(['setUserInfo'])
   }
+}
 </script>
 
 <style lang="scss">
