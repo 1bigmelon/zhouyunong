@@ -119,19 +119,19 @@
     <div class="main">
       <header class="header-box">
         <div class="fold-box">
-          <a-icon type="menu-fold" style="font-size: 1.1rem;"/>
+          <a-icon type="menu-fold" style="font-size: 1.1rem;" />
         </div>
         <div class="user-box">
           <div class="dropdown-box">
             <div class="info-box">
-              <a-avatar icon="user"/>
-              <span style="cursor: default;">测试名字</span>
-              <a-icon type="caret-down" style="font-size: .8rem;"/>
+              <a-avatar icon="user" />
+              <span style="cursor: default;">{{ userInfo.name }}</span>
+              <a-icon type="caret-down" style="font-size: .8rem;" />
             </div>
             <div class="dropdown">
               <div class="dropdown-item">
                 <div class="dropdown-content" @click="logout">
-                  <a-icon type="export"/>
+                  <a-icon type="export" />
                   <span>退出登录</span>
                 </div>
               </div>
@@ -140,10 +140,10 @@
         </div>
       </header>
       <main class="content-box">
-        <div class="content-title" v-if="showTitleBar">
+        <div v-if="showTitleBar" class="content-title">
           <span>{{ contentTitle }}</span>
         </div>
-        <div class="content">  
+        <div class="content">
           <router-view></router-view>
         </div>
       </main>
@@ -152,28 +152,25 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 import MenuItem from '../components/MenuItem.vue'
 
 export default {
   name: 'MainLayout',
+  components: {
+    'menu-item': MenuItem
+  },
   data() {
     return {
       showTitleBar: true
     }
   },
-  methods: {
-    logout() {
-      localStorage.removeItem('token')
-      this.$router.push('/login')
-      this.$message.success('已退出登录')
-    }
-  },
-  components: {
-    'menu-item': MenuItem
-  },
   computed: {
-    ...mapState(['selectedItemName', 'contentTitle'])
+    ...mapState([
+      'selectedItemName',
+      'contentTitle',
+      'userInfo'
+    ])
   },
   watch: {
     selectedItemName(newVal) {
@@ -182,6 +179,23 @@ export default {
   },
   mounted() {
     this.showTitleBar = (this.selectedItemName !== 'index')
+
+    if (window.performance.navigation.type !== 1) {
+      this.verifyToken()
+        .catch(() => {
+          this.$message.error('身份已过期，请重新登录')
+          this.$router.push('/login')
+        })
+    }
+  },
+  methods: {
+    ...mapActions(['verifyToken']),
+
+    logout() {
+      localStorage.removeItem('token')
+      this.$router.push('/login')
+      this.$message.success('已退出登录')
+    }
   }
 }
 </script>
@@ -261,7 +275,7 @@ export default {
         }
       }
     }
-    
+
     .main {
       min-height: 100%;
       width: 100%;
@@ -274,7 +288,6 @@ export default {
         position: relative;
 
         .user-box {
-          width: 10rem;
           display: flex;
           align-items: center;
           position: absolute;
@@ -311,7 +324,7 @@ export default {
               box-shadow: 1px 1.5px 10px -5px $theme-color;
               padding: .5rem 0;
               display: none;
-              
+
               .dropdown-item {
                 height: 2rem;
                 display: flex;
@@ -322,7 +335,7 @@ export default {
                   background-color: rgb(242, 240, 254);
                   transition: background-color linear .15s;
                   cursor: pointer;
-                  color: $theme-color; 
+                  color: $theme-color;
                 }
 
                 .dropdown-content {
