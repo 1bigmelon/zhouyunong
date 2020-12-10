@@ -20,60 +20,64 @@ const routes = [
   },
   {
     path: '/index',
-    component: () => import('../layouts/MainLayout'),
+    component: () => import('@/layouts/MainLayout'),
     children: [
       {
         path: '',
         name: 'index',
-        component: () => import('../pages/index')
+        component: () => import('@/pages/index')
       }
     ]
   },
   {
     path: '/login',
     name: 'login',
-    component: () => import('../pages/login')
+    component: () => import('@/pages/login')
   },
   {
     path: '/article',
-    component: () => import('../layouts/MainLayout'),
+    component: () => import('@/layouts/MainLayout'),
     children: [
       {
         path: 'new',
         name: 'newArticle',
-        component: () => import('../pages/article/newArticle')
+        component: () => import('@/pages/article/newArticle')
       },
       {
         path: 'review',
         name: 'review',
-        component: () => import('../pages/article/review')
+        component: () => import('@/pages/article/review')
       },
       {
         path: 'manage',
         name: 'manageArticle',
-        component: () => import('../pages/article/manageArticle')
+        component: () => import('@/pages/article/manageArticle')
       }
     ]
   },
   {
     path: '/category',
-    component: () => import('../layouts/MainLayout'),
+    component: () => import('@/layouts/MainLayout'),
     children: [
 
     ]
   },
   {
     path: '/tag',
-    component: () => import('../layouts/MainLayout'),
+    component: () => import('@/layouts/MainLayout'),
     children: [
 
     ]
   },
   {
-    path: '/system',
-    component: () => import('../layouts/MainLayout'),
+    path: '/user',
+    component: () => import('@/layouts/MainLayout'),
     children: [
-
+      {
+        path: 'new',
+        name: 'newUser',
+        component: () => import('@/pages/user/newUser')
+      }
     ]
   }
 ]
@@ -90,7 +94,8 @@ const contentTitleMap = {
   'index': '主页',
   'newArticle': '新建文章',
   'review': '文章审核',
-  'manageArticle': '文章管理'
+  'manageArticle': '文章管理',
+  'newUser': '新建用户'
 }
 
 router.beforeEach((to, from, next) => {
@@ -120,6 +125,7 @@ router.beforeEach((to, from, next) => {
 })
 
 router.afterEach(() => {
+  window.scrollTo(0, 0)
   NProgress.done()
 })
 
