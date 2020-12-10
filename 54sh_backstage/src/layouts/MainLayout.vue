@@ -89,14 +89,20 @@
         <div class="divider"></div>
         <div id="system-manage">
           <div class="side-bar-title">
-            <span>系统管理</span>
+            <span>人员管理</span>
           </div>
           <div>
             <menu-item
-              text="人员管理"
+              text="新建用户"
+              icon="user"
+              name="newUser"
+              to="/user/new"
+            />
+            <menu-item
+              text="查看用户"
               icon="team"
-              name="personnel"
-              to="/system/personnel"
+              name="manageUser"
+              to="/user/manage"
             />
           </div>
         </div>
@@ -384,9 +390,4 @@ export default {
       }
     }
   }
-
-  // @font-face {
-  //   font-family: 'Hiragino';
-  //   src: url(../assets/fonts/HiraginoSansGB.ttf);
-  // }
 </style>
