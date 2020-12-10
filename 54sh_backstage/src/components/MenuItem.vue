@@ -14,11 +14,6 @@ import { mapState, mapActions } from 'vuex'
 
 export default {
   name: 'MenuItem',
-  data() {
-    return {
-      isSelected: false
-    }
-  },
   props: {
     text: {
       type: String,
@@ -37,16 +32,9 @@ export default {
       default: '/index'
     }
   },
-  methods: {
-    ...mapActions(['setSelectedItemName']),
-
-    onClick() {
-      if (this.name === 'logout') {
-        this.$emit('click')
-        return
-      }
-      this.setSelectedItemName(this.name)
-      this.$router.push(this.to)
+  data() {
+    return {
+      isSelected: false
     }
   },
   computed: {
@@ -59,6 +47,18 @@ export default {
   },
   mounted() {
     this.isSelected = (this.name === this.selectedItemName)
+  },
+  methods: {
+    ...mapActions(['setSelectedItemName']),
+
+    onClick() {
+      if (this.name === 'logout') {
+        this.$emit('click')
+        return
+      }
+      this.setSelectedItemName(this.name)
+      this.$router.push(this.to)
+    }
   }
 }
 </script>
@@ -83,12 +83,12 @@ export default {
   .selected, .unselected {
     margin: .2rem 0;
   }
-  
-  .selected {  
+
+  .selected {
     background-color: rgb(242, 240, 254);
     border-left: $theme-color solid 3px;
     box-shadow: 0 0 1px 1px rgb(240, 238, 248) inset;
-    
+
     .menu-item--container {
       padding-left: 1.8rem;
       color: $theme-color;
@@ -99,7 +99,7 @@ export default {
 
   .unselected {
     transition: background-color linear .15s;
-    
+
     .menu-item--container {
       padding-left: 1.8rem;
       transition: background-color linear .15s;
