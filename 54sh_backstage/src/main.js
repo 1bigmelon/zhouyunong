@@ -15,15 +15,12 @@ import router from './router/router'
 
 // ant design vue
 import {
-  Message, Icon, Avatar, Input, Button, Table
+  Message, Icon, Avatar, Input, Button, Table, Tag, Tooltip
 } from 'ant-design-vue'
 Vue.use(Icon).use(Avatar).use(Input).use(Button).use(Table)
+  .use(Tag).use(Tooltip)
 
 Vue.prototype.$message = Message
-
-// MainLayout
-import shLayout from './layouts/MainLayout'
-Vue.component('sh-layout', shLayout)
 
 Vue.config.productionTip = false
 
