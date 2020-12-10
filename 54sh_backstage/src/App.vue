@@ -32,4 +32,9 @@ export default {
     height: 100%;
     width: 100%;
   }
+
+  .ant-table-tbody > tr > td {
+    padding: 0 .3rem;
+    height: 4rem;
+  }
 </style>
