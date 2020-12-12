@@ -37,4 +37,9 @@ export default {
     padding: 0 .3rem;
     height: 4rem;
   }
+
+  @font-face {
+    font-family: 'OpenSans';
+    src: url(./assets/fonts/OpenSans-Regular.ttf);
+  }
 </style>
