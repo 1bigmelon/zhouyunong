@@ -1,7 +1,11 @@
-import authAPI from '../api/auth'
+import authAPI from '@/api/auth'
+import orgAPI from '@/api/org'
+import userAPI from '@/api/user'
 
 const Repository = {
-  ...authAPI
+  ...authAPI,
+  ...orgAPI,
+  ...userAPI
 }
 
 export default {
