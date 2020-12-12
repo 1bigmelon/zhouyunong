@@ -14,7 +14,6 @@
     </div>
     <div class="content-box">
       <div class="search-box">
-        还没想好搜索框怎么布局
       </div>
       <div class="list-box">
         <a-table :columns="columns" :data-source="test" row-key="id">
@@ -204,14 +203,12 @@ export default {
     }
 
     .data-box {
-      min-width: 100%;
-      display: flex;
-      justify-content: space-around;
+      @extend .data-box;
+      width: 100%;
     }
 
     .content-box {
       @extend .component;
-
       margin-top: 1.5rem;
       width: 100%;
 
