@@ -1,10 +1,10 @@
-import context from '../main'
+import { Axios } from '@/plugins/axios'
 
 export default {
   login(credentials) {
-    return context.$axios.post('/auth/signin', credentials)
+    return Axios.post('/auth/signin', credentials)
   },
   verifyToken() {
-    return context.$axios.get('/auth/verify')
+    return Axios.get('/auth/verify')
   }
 }
