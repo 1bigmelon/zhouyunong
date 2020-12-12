@@ -12,75 +12,7 @@ VueRouter.prototype.push = function push(location) {
 
 Vue.use(VueRouter)
 
-const routes = [
-  {
-    path: '/',
-    name: 'base',
-    redirect: () => { return '/index' }
-  },
-  {
-    path: '/index',
-    component: () => import('@/layouts/MainLayout'),
-    children: [
-      {
-        path: '',
-        name: 'index',
-        component: () => import('@/pages/index')
-      }
-    ]
-  },
-  {
-    path: '/login',
-    name: 'login',
-    component: () => import('@/pages/login')
-  },
-  {
-    path: '/article',
-    component: () => import('@/layouts/MainLayout'),
-    children: [
-      {
-        path: 'new',
-        name: 'newArticle',
-        component: () => import('@/pages/article/newArticle')
-      },
-      {
-        path: 'review',
-        name: 'review',
-        component: () => import('@/pages/article/review')
-      },
-      {
-        path: 'manage',
-        name: 'manageArticle',
-        component: () => import('@/pages/article/manageArticle')
-      }
-    ]
-  },
-  {
-    path: '/category',
-    component: () => import('@/layouts/MainLayout'),
-    children: [
-
-    ]
-  },
-  {
-    path: '/tag',
-    component: () => import('@/layouts/MainLayout'),
-    children: [
-
-    ]
-  },
-  {
-    path: '/user',
-    component: () => import('@/layouts/MainLayout'),
-    children: [
-      {
-        path: 'new',
-        name: 'newUser',
-        component: () => import('@/pages/user/newUser')
-      }
-    ]
-  }
-]
+import { routes } from './routerMap'
 
 const routerConfig = {
   mode: 'history',
@@ -95,7 +27,8 @@ const contentTitleMap = {
   'newArticle': '新建文章',
   'review': '文章审核',
   'manageArticle': '文章管理',
-  'newUser': '新建用户'
+  'newUser': '新建用户',
+  'manageUser': '用户管理'
 }
 
 router.beforeEach((to, from, next) => {
@@ -120,6 +53,7 @@ router.beforeEach((to, from, next) => {
     }
 
     router.app.$options.store.dispatch('setContentTitle', contentTitleMap[to.name])
+    router.app.$options.store.dispatch('setSelectedItemName', to.name)
     next()
   }
 })
