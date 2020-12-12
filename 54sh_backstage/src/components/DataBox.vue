@@ -83,9 +83,4 @@ export default {
       font-family: -apple-system, 'OpenSans', sans-serif;
     }
   }
-
-  @font-face {
-    font-family: 'OpenSans';
-    src: url(../assets/fonts/OpenSans-Regular.ttf);
-  }
 </style>
