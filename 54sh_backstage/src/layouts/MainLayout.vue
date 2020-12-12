@@ -29,7 +29,7 @@
             <menu-item
               text="文章审核"
               icon="audit"
-              name="reviewArticle"
+              name="review"
               to="/article/review"
             />
             <menu-item
@@ -39,7 +39,7 @@
               to="/article/manage"
             />
             <menu-item
-              text="查看投稿"
+              text="投稿管理"
               icon="inbox"
               name="manageContribution"
               to="/article/contribution"
@@ -59,7 +59,7 @@
               to="/category/new"
             />
             <menu-item
-              text="查看分类"
+              text="分类管理"
               icon="appstore"
               name="manageCategory"
               to="/category/manage"
@@ -79,7 +79,7 @@
               to="/tag/new"
             />
             <menu-item
-              text="查看标签"
+              text="标签管理"
               icon="appstore"
               name="manageTag"
               to="/tag/manage"
@@ -94,12 +94,12 @@
           <div>
             <menu-item
               text="新建用户"
-              icon="user"
+              icon="user-add"
               name="newUser"
               to="/user/new"
             />
             <menu-item
-              text="查看用户"
+              text="用户管理"
               icon="team"
               name="manageUser"
               to="/user/manage"
@@ -126,6 +126,7 @@
       <header class="header-box">
         <div class="fold-box">
           <a-icon type="menu-fold" style="font-size: 1.1rem;" />
+          <span style="color:red;">←这里还没做</span>
         </div>
         <div class="user-box">
           <div class="dropdown-box">
@@ -321,6 +322,7 @@ export default {
 
             &:hover .dropdown {
               display: block;
+              animation: dropdown-list .3s ease;
             }
 
             .dropdown {
@@ -388,6 +390,18 @@ export default {
           padding: 2rem;
         }
       }
+    }
+  }
+
+  @keyframes dropdown-list {
+    from {
+      transform: translateY(-7px);
+      opacity: 0;
+    }
+
+    to {
+      transform: translateY(0);
+      opacity: 1;
     }
   }
 </style>
