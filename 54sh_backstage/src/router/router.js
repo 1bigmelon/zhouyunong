@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
+import { Message } from 'ant-design-vue'
 
 // 屏蔽反复点击同一路由时的报错
 const originalPush = VueRouter.prototype.push
@@ -14,14 +15,8 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    redirect: () => {
-      /**
-       * TODO 验证token合法性
-       * 合法转至index
-       * 过期转至login
-       */
-      return '/login'
-    }
+    name: 'base',
+    redirect: () => { return '/index' }
   },
   {
     path: '/index',
@@ -29,12 +24,14 @@ const routes = [
     children: [
       {
         path: '',
+        name: 'index',
         component: () => import('../pages/index')
       }
     ]
   },
   {
     path: '/login',
+    name: 'login',
     component: () => import('../pages/login')
   },
   {
@@ -42,19 +39,41 @@ const routes = [
     component: () => import('../layouts/MainLayout'),
     children: [
       {
-        path: 'newArticle',
+        path: 'new',
+        name: 'newArticle',
         component: () => import('../pages/article/newArticle')
+      },
+      {
+        path: 'review',
+        name: 'review',
+        component: () => import('../pages/article/review')
+      },
+      {
+        path: 'manage',
+        name: 'manageArticle',
+        component: () => import('../pages/article/manageArticle')
       }
+    ]
+  },
+  {
+    path: '/category',
+    component: () => import('../layouts/MainLayout'),
+    children: [
+
     ]
   },
   {
     path: '/tag',
     component: () => import('../layouts/MainLayout'),
     children: [
-      {
-        path: 'newTag',
-        component: () => import ('../pages/tag/newTag')
-      }
+
+    ]
+  },
+  {
+    path: '/system',
+    component: () => import('../layouts/MainLayout'),
+    children: [
+
     ]
   }
 ]
@@ -67,29 +86,37 @@ const routerConfig = {
 
 let router = new VueRouter(routerConfig)
 
-const breadcrumbNames = {
+const contentTitleMap = {
   'index': '主页',
-  'article': '文章管理',
   'newArticle': '新建文章',
-  'tag': '标签管理',
-  'newTag': '新建标签'
+  'review': '文章审核',
+  'manageArticle': '文章管理'
 }
 
 router.beforeEach((to, from, next) => {
   NProgress.start()
 
-  // 获取url分段数组
-  let breadcrumbs = to.fullPath.split('/')
-  breadcrumbs.shift()
-  
-  let breadcrumbRoutes = []
-  for (let item in breadcrumbNames) {
-    if (breadcrumbs.includes(item)) {
-      breadcrumbRoutes.push({ breadcrumbName: breadcrumbNames[item] })
-    }
+  if (to.name === 'login') {
+    next()
   }
-  router.app.$options.store.dispatch('setBreadcrumbs', breadcrumbRoutes)
-  next()
+  else {
+    // 判断token合法性
+    /**
+     * TODO 判断token合法性
+     */
+    if (localStorage.getItem('token')) {
+      next()
+    }
+    else {
+      if (to.name !== 'base') {
+        Message.error('身份已过期，请重新登录')
+      }
+      next('/login')
+    }
+
+    router.app.$options.store.dispatch('setContentTitle', contentTitleMap[to.name])
+    next()
+  }
 })
 
 router.afterEach(() => {

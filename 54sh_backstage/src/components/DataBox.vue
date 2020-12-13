@@ -1,17 +1,20 @@
 <template>
   <div class="container">
-    <!-- dev test -->
-      new tag
-    <!-- dev test -->
+
   </div>
 </template>
 
 <script>
 export default {
-  name: 'newTag'
+  name: '',
+  data() {
+    return {
+
+    }
+  }
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
 
 </style>

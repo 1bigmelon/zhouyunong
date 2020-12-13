@@ -11,14 +11,15 @@ Vue.use(axiosConfig)
 import Vuex from 'vuex'
 import store from './store/index'
 Vue.use(Vuex)
-import Router from './router/router'
+import router from './router/router'
 
 // ant design vue
 import {
-  Layout, Message, Menu, Icon, Avatar, Dropdown, Button, Breadcrumb
+  Message, Icon, Avatar, Input, Button
 } from 'ant-design-vue'
-Vue.use(Layout).use(Message).use(Menu).use(Icon).use(Avatar)
-   .use(Dropdown).use(Button).use(Breadcrumb)
+Vue.use(Icon).use(Avatar).use(Input).use(Button)
+
+Vue.prototype.$message = Message
 
 // MainLayout
 import shLayout from './layouts/MainLayout'
@@ -26,8 +27,8 @@ Vue.component('sh-layout', shLayout)
 
 Vue.config.productionTip = false
 
-new Vue({
+export default new Vue({
   render: h => h(App),
-  router: Router,
-  store: store
+  router,
+  store
 }).$mount('#app')

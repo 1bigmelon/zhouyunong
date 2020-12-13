@@ -1,3 +1,7 @@
-/**
- * TODO 登录与鉴权的api
- */
+import context from '../main'
+
+export default {
+  login(credentials) {
+    return context.$axios.post('/auth/signin', credentials)
+  }
+}
