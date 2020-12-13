@@ -27,8 +27,13 @@ const contentTitleMap = {
   'newArticle': '新建文章',
   'review': '文章审核',
   'manageArticle': '文章管理',
+  'newCategory': '新建分类',
+  'manageCategory': '查看分类',
+  'newTag': '新建标签',
+  'manageTag': '查看标签',
   'newUser': '新建用户',
-  'manageUser': '用户管理'
+  'manageUser': '用户管理',
+
 }
 
 router.beforeEach((to, from, next) => {

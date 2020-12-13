@@ -1,22 +1,22 @@
 <template>
   <div class="container">
     <!-- dev test -->
-      new article
+    new article
     <!-- dev test -->
-    
+
   </div>
 </template>
 
 <script>
 export default {
-  name: 'newArticle',
+  name: 'NewArticle',
   data() {
     return {
 
     }
   },
   methods: {
-    
+
   }
 }
 </script>

@@ -281,16 +281,19 @@ export default {
 
 <style lang="scss" scoped>
   .container {
-    height: 100vh;
+    height: 100%;
     width: 100%;
     display: flex;
     justify-content: center;
+    align-items: center;
 
     .form-box {
       @extend .component;
-      height: 100%;
       width: 55%;
-      padding: 2rem;
+      padding: 2rem{
+          bottom: 3rem;
+      };
+
       display: flex;
       justify-content: center;
 

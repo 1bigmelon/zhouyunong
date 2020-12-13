@@ -1,14 +1,14 @@
 <template>
   <div class="container">
     <!-- dev test -->
-    manage article
+    manage tag
     <!-- dev test -->
   </div>
 </template>
 
 <script>
 export default {
-  name: '',
+  name: 'Index',
   data() {
     return {
 
@@ -18,5 +18,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+.container {
+  @extend .component;
+}
 </style>
