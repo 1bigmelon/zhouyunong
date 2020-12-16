@@ -17,7 +17,7 @@ import { routes } from './routerMap'
 const routerConfig = {
   mode: 'history',
   routes: routes,
-  base: '/manage'
+  base: '/mgt'
 }
 
 const router = new VueRouter(routerConfig)
