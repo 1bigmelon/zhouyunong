@@ -4,7 +4,7 @@ export default {
   newTag(tag) {
     return Axios.post('tag/new', tag)
   },
-  viewTag() {
+  getAllTags() {
     return Axios.get('tag/ls')
   }
 }

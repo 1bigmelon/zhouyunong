@@ -4,7 +4,7 @@ export default {
   newCategory(category) {
     return Axios.post('/div/new', category)
   },
-  viewCategory() {
+  getAllCategories() {
     return Axios.get('div/ls')
   }
 }
