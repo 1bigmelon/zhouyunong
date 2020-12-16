@@ -6,5 +6,8 @@ export default {
   },
   getAllUsers() {
     return Axios.get('/user/ls')
+  },
+  disableUser(userInfo) {
+    return Axios.post('user/remove', userInfo)
   }
 }
