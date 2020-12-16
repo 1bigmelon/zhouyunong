@@ -104,18 +104,18 @@ export default {
     }
   },
   mounted() {
-    this.$api.viewCategory()
+    this.$api.getAllCategories()
       .then((res) => {
         console.log(res)
         if (!res.data.status) {
           this.$message.error(res.data.msg)
           return Promise.resolve()
         }
-        const { categories, enable, disable } = res.data.data
-        this.categoryList = categories
-        this.totalCategory = categories.length
-        this.enabledCategory = enable
-        this.disabledCategory = disable
+        const { divs } = res.data.data
+        this.categoryList = divs
+        this.totalCategory = divs.length
+        // this.enabledCategory = enable
+        // this.disabledCategory = disable
 
 
       })
