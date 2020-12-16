@@ -37,6 +37,7 @@ Axios.interceptors.response.use((res) => {
 
   return res
 }, (err) => {
+  console.log('err: ', err)
   if (err.response.status === 401) {
 
     /**
