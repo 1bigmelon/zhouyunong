@@ -9,9 +9,26 @@
       <div class="search-box">
         还没想好搜索框怎么布局
       </div>
-      <div class="list-box">
-        <a-table :columns="columns" row-key="id">
-
+      <div class="user-list-box">
+        <a-table :columns="columns" row-key="id" :data-source="userList">
+          <template slot="status" slot-scope="text, record">
+            <span :style="`color: ${record.status ? '#0de20d' : '#fc243a'};`">{{ text }}</span>
+          </template>
+          <template slot="operation" slot-scope="text, record">
+            <a-button
+              type="primary"
+              size="small"
+              style="font-size: .7rem; margin-right: .5rem;"
+              @click="edit(record.id)"
+            >编辑</a-button>
+            <a-button
+              :type="record.status ? 'danger' : 'default'"
+              :class="record.status ? '' : 'button-color-green'"
+              size="small"
+              style="font-size: .7rem;"
+              @click="record.status ? disable(record.id) : enable(record.id)"
+            >停用</a-button>
+          </template>
         </a-table>
       </div>
     </div>
@@ -27,49 +44,49 @@ const columns = [
     title: '用户名',
     key: 'username',
     dataIndex: 'user_id',
-    width: '10%',
+    width: '8%',
     align: 'center'
   },
   {
     title: '真实姓名',
     key: 'realname',
     dataIndex: 'name',
-    width: '',
+    width: '8%',
     align: 'center'
   },
   {
     title: '权限角色',
     key: 'role',
-    dataIndex: '',
-    width: '',
+    dataIndex: 'role',
+    width: '10%',
     align: 'center'
   },
   {
     title: '所属部门',
     key: 'department',
     dataIndex: 'org.name',
-    width: '',
+    width: '10%',
     align: 'center'
   },
   {
     title: '手机号码',
     key: 'phone',
     dataIndex: 'phone',
-    width: '',
+    width: '10%',
     align: 'center'
   },
   {
     title: '邮箱',
     key: 'email',
     dataIndex: 'email',
-    width: '',
+    width: '15%',
     align: 'center'
   },
   {
     title: '最近登录IP',
     key: 'ip',
     dataIndex: 'last_ip',
-    width: '',
+    width: '10%',
     align: 'center'
   },
   {
@@ -82,20 +99,22 @@ const columns = [
   {
     title: '状态',
     key: 'status',
-    dataIndex: 'status',
-    width: '',
-    align: 'center'
+    dataIndex: 'statusText',
+    width: '5%',
+    align: 'center',
+    scopedSlots: { customRender: 'status' }
   },
   {
     title: '操作',
     key: 'operation',
-    width: '',
+    width: '10%',
     align: 'center',
     scopedSlots: { customRender: 'operation' }
   }
 ]
 
 export default {
+  inject: ['refresh'],
   name: 'ManageUser',
   components: {
     'data-box': DataBox
@@ -112,21 +131,56 @@ export default {
   mounted() {
     this.$api.getAllUsers()
       .then((res) => {
-        console.log(res)
         if (!res.data.status) {
           this.$message.error(res.data.msg)
           return Promise.resolve()
         }
         const { users, enabled, disabled } = res.data.data
-        this.userList = users
+        this.userList = users.map((item) => {
+          return Object.assign(item, {
+            // eslint-disable-next-line camelcase
+            last_login: moment.parseZone(item.last_login.substr(5, item.last_login.length - 3)).format('YYYY[-]MM[-]DD HH[:]mm[:]ss'),
+            statusText: item.status ? '使用中' : '已停用'
+          })
+        })
         this.totalUser = users.length
         this.enabledUser = enabled
         this.disabledUser = disabled
-
-        // eslint-disable-next-line camelcase
-        // this.userList.last_login = moment(this.userList.last_login).format('YYYY[-]MM[-]DD HH[:]mm[:]ss')
-        console.log('moment(this.userList.last_login).format(\'YYYY[-]MM[-]DD HH[:]mm[:]ss\'): ', moment(this.userList[0].last_login.substr(5, this.userList[0].last_login.length - 3)).format('YYYY[-]MM[-]DD HH[:]mm[:]ss'))
       })
+  },
+  methods: {
+    edit(id) {
+
+    },
+    disable(id) {
+      const that = this
+
+      this.$modal.confirm({
+        title: '确认停用',
+        content: '确定要停用该用户吗？',
+        okText: '确定',
+        cancelText: '取消',
+        onOk() {
+          that.$api.disableUser({ id })
+            .then((res) => {
+              console.log(res)
+              if (res.data.status) {
+                that.$message.success('成功停用该用户')
+                that.refresh()
+                return Promise.resolve()
+              }
+              else {
+                return Promise.reject()
+              }
+            })
+        },
+        onCancel() {}
+      })
+    },
+    enable(id) {
+      console.log('enable', id)
+
+    }
   }
 }
 </script>
