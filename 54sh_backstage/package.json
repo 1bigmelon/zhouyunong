@@ -9,13 +9,9 @@
   "dependencies": {
     "ant-design-vue": "^1.7.1",
     "axios": "^0.21.0",
-    "babel-plugin-import": "^1.13.1",
     "core-js": "^3.6.5",
-    "less-loader": "^7.0.2",
     "moment": "^2.29.1",
-    "node-sass": "^4.14.1",
     "nprogress": "^0.2.0",
-    "sass-loader": "^10.0.4",
     "vue": "^2.6.11",
     "vue-router": "^3.4.8",
     "vuex": "^3.5.1"
@@ -25,12 +21,15 @@
     "@vue/cli-plugin-eslint": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
     "babel-eslint": "^10.1.0",
+    "babel-plugin-import": "^1.13.3",
     "babel-preset-es2020": "^1.0.2",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
     "less": "^2.7.2",
+    "less-loader": "^7.1.0",
     "moment-locales-webpack-plugin": "^1.2.0",
-    "vue-particles": "^1.0.9",
+    "node-sass": "^5.0.0",
+    "sass-loader": "^10.1.0",
     "vue-template-compiler": "^2.6.11"
   },
   "eslintConfig": {
