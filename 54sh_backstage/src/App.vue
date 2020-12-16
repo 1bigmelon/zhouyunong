@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <router-view></router-view>
+    <router-view v-if="isRouterAlive"></router-view>
   </div>
 </template>
 
@@ -8,9 +8,14 @@
 import { mapActions } from 'vuex'
 export default {
   name: '',
+  provide() {
+    return {
+      refresh: this.refresh
+    }
+  },
   data() {
     return {
-
+      isRouterAlive: true
     }
   },
   mounted() {
@@ -22,7 +27,14 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['setUserInfo'])
+    ...mapActions(['setUserInfo']),
+
+    refresh() {
+      this.isRouterAlive = false
+      this.$nextTick(() => {
+        this.isRouterAlive = true
+      })
+    }
   }
 }
 </script>
@@ -33,9 +45,29 @@ export default {
     width: 100%;
   }
 
-  .ant-table-tbody > tr > td {
+  .index-list-box .ant-table-tbody > tr > td {
     padding: 0 .3rem;
     height: 4rem;
+  }
+
+  .user-list-box .ant-table-tbody > tr > td {
+    padding: 0 .3rem;
+    height: 2.8rem;
+  }
+
+  .button-color-green {
+    background-color: #52C41A;
+    border-color: #52C41A;
+
+    &:hover, &:focus {
+      background-color: #73d13d;
+      border-color: #73d13d;
+    }
+
+    &:active, &.active {
+      background-color: #389e0d;
+      border-color: #389e0d;
+    }
   }
 
   @font-face {
