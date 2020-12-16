@@ -16,13 +16,16 @@ import router from './router/router'
 // ant design vue
 import {
   Message, Icon, Avatar, Input, Button,
-  Table, Tag, Tooltip, Form, Select
+  Table, Tag, Tooltip, Form, Select,
+  Modal, Alert
 } from 'ant-design-vue'
 Vue.use(Icon).use(Avatar).use(Input).use(Button).use(Table)
-  .use(Tag).use(Tooltip).use(Form).use(Select)
+  .use(Tag).use(Tooltip).use(Form).use(Select).use(Modal)
+  .use(Alert)
 
 Vue.prototype.$message = Message
 Vue.prototype.$form = Form
+Vue.prototype.$modal = Modal
 
 Vue.config.productionTip = false
 
