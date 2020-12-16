@@ -65,7 +65,7 @@ export default {
 
 <style lang="scss" scoped>
   .menu-item--container {
-    height: 2.7rem;
+    height: 2.9rem;
     width: 100%;
     border-left: #FFF solid 3px;
     display: flex;
@@ -78,10 +78,6 @@ export default {
         margin-left: .8rem;
       }
     }
-  }
-
-  .selected, .unselected {
-    margin: .2rem 0;
   }
 
   .selected {
