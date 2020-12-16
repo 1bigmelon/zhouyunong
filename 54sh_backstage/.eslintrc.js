@@ -112,6 +112,7 @@ module.exports = {
     'no-useless-computed-key': 0, // 禁止在对象中使用不必要的计算属性
     'no-useless-constructor': 2, //可以在不改变类的工作方式的情况下安全地移除的类构造函数
     'no-whitespace-before-property': 0,
+    'no-unused-vars': 0,
     'one-var': 0, //禁止连续声明
     'operator-linebreak': [2, 'after', {
       'overrides': {
