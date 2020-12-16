@@ -300,6 +300,7 @@ export default {
           position: absolute;
           right: 2rem;
           top: 1rem;
+          min-width: 10rem;
 
           .dropdown-box {
             font-size: 1rem;
