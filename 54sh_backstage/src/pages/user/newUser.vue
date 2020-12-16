@@ -1,6 +1,7 @@
 <template>
   <div class="container">
     <div class="form-box">
+      <a-alert :message="tipMessage" type="info" show-icon style="margin-bottom: .5rem;" />
       <a-form class="form" :form="form" :label-col="labelCol" :wrapper-col="wrapperCol" label-align="left" @submit="submitBtnHdl">
         <a-form-item label="用户名">
           <a-input
@@ -148,17 +149,7 @@ export default {
             ],
           },
         ],
-        fixedPhone: [
-          'fixedPhone',
-          {
-            rules: [
-              {
-                required: true,
-                message: '请输入固定电话!'
-              }
-            ],
-          },
-        ],
+        fixedPhone: ['fixedPhone'],
         cellPhone: [
           'cellPhone',
           {
@@ -177,11 +168,7 @@ export default {
               {
                 type: 'email',
                 message: '请输入正确的电子邮箱!',
-              },
-              {
-                required: true,
-                message: '请输入电子邮箱!',
-              },
+              }
             ],
           },
         ],
@@ -210,7 +197,8 @@ export default {
       },
       validPwd: false,
       orgList: [],
-      submitting: false
+      submitting: false,
+      tipMessage: '带红色星号的为必填，不带的为选填'
     }
   },
   mounted() {
@@ -289,13 +277,14 @@ export default {
 
     .form-box {
       @extend .component;
-      width: 55%;
-      padding: 2rem{
-          bottom: 3rem;
-      };
 
+      width: 42rem;
+      padding: 2rem {
+        bottom: 3rem;
+      };
       display: flex;
-      justify-content: center;
+      align-items: center;
+      flex-direction: column;
 
       .form {
         width: 25rem;
