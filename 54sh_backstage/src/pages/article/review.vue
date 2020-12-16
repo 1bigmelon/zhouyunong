@@ -8,7 +8,7 @@
 
 <script>
 export default {
-  name: '',
+  name: 'Review',
   data() {
     return {
 
