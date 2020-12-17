@@ -33,6 +33,7 @@ const contentTitleMap = {
   'manageTag': '查看标签',
   'newUser': '新建用户',
   'manageUser': '用户管理',
+  'editUser': '编辑用户'
 
 }
 
