@@ -1,9 +1,9 @@
 <template>
   <div class="container">
-    <!-- <div class="greeting-box">
+    <div class="greeting-box">
       <span>{{ greeting }}，</span>
       <span>{{ userInfo.name }}</span>
-    </div> -->
+    </div>
     <div class="data-box">
       <data-box icon="file-text" title="文章总数量" :value="1564" />
       <data-box icon="file-protect" title="待二审数量" :value="745" />
@@ -181,7 +181,7 @@ export default {
     .greeting-box {
       height: 1.8rem;
       min-width: 100%;
-      margin-bottom: 1.7rem;
+      margin-bottom: 2rem;
       overflow: hidden;
 
       span {
