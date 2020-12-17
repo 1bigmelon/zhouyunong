@@ -19,7 +19,7 @@
               type="primary"
               size="small"
               style="font-size: .7rem; margin-right: .5rem;"
-              @click="edit(record.id)"
+              @click="edit(record.user_id)"
             >编辑</a-button>
             <a-button
               :type="record.status ? 'danger' : 'default'"
@@ -149,8 +149,8 @@ export default {
       })
   },
   methods: {
-    edit(id) {
-
+    edit(username) {
+      this.$router.push(`/user/edit/${username}`)
     },
     disable(id) {
       const that = this
