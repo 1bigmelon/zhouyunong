@@ -78,6 +78,10 @@ export const routes = [
     component: () => import('@/layouts/MainLayout'),
     children: [
       {
+        path: '',
+        redirect: () => 'manage'
+      },
+      {
         path: 'new',
         name: 'newUser',
         component: () => import('@/pages/user/newUser')
@@ -86,6 +90,11 @@ export const routes = [
         path: 'manage',
         name: 'manageUser',
         component: () => import('@/pages/user/manageUser')
+      },
+      {
+        path: 'edit/:username',
+        name: 'editUser',
+        component: () => import('@/pages/user/editUser')
       }
     ]
   },
