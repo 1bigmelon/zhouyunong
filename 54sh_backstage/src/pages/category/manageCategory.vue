@@ -128,27 +128,26 @@ export default {
 
 <style lang="scss" scoped>
 .container {
-  @extend .component;
   height: 100%;
+  width: 100%;
+  display: block;
+
+  .data-box {
+    @extend .data-box;
+    width: 50rem;
+    margin: 0 auto;
+  }
+
+  .content-box {
+    @extend .component;
+    margin-top: 1.5rem;
     width: 100%;
-    display: block;
 
-    .data-box {
-      @extend .data-box;
-      width: 50rem;
-      margin: 0 auto;
-    }
-
-    .content-box {
-      @extend .component;
-      margin-top: 1.5rem;
+    .search-box {
+      height: 7rem;
       width: 100%;
-
-      .search-box {
-        height: 7rem;
-        width: 100%;
-        background-color: pink;
-      }
+      background-color: pink;
     }
+  }
 }
 </style>
