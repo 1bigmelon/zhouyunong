@@ -1,6 +1,7 @@
 const state = {
   selectedItemName: 'index',
-  contentTitle: ''
+  contentTitle: '',
+  isSideBarFolded: false
 }
 
 const mutations = {
@@ -9,15 +10,21 @@ const mutations = {
   },
   setContentTitle(state, newVal) {
     state.contentTitle = newVal
+  },
+  setIsSideBarFolded(state, newVal) {
+    state.isSideBarFolded = newVal
   }
 }
 
 const actions = {
-  setSelectedItemName({ commit }, newVal) {
-    commit('setSelectedItemName', newVal)
+  setSelectedItemName({ commit }, newSelectedItemName) {
+    commit('setSelectedItemName', newSelectedItemName)
   },
-  setContentTitle({ commit }, newVal) {
-    commit('setContentTitle', newVal)
+  setContentTitle({ commit }, newContentTitle) {
+    commit('setContentTitle', newContentTitle)
+  },
+  setIsSideBarFolded({ commit }, newIsSideBarFolded) {
+    commit('setIsSideBarFolded', newIsSideBarFolded)
   }
 }
 
