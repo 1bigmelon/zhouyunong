@@ -38,15 +38,9 @@ Axios.interceptors.response.use((res) => {
   return res
 }, (err) => {
   console.log('err: ', err)
-  if (err.response.status === 401) {
+  this.$message.error(err.message)
 
-    /**
-     * TODO 返回到登录界面
-     */
-
-  }
-
-  return Promise.reject(err.response.data)
+  return Promise.reject(err)
 })
 
 export default {
