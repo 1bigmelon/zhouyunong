@@ -208,7 +208,6 @@ export default {
           this.$message.error(res.data.msg)
           return Promise.resolve()
         }
-        console.log(res)
         this.orgList = res.data.data.orgs
       })
   },
@@ -251,15 +250,16 @@ export default {
           role: values.role,
           org: values.department
         }).then((res) => {
-          this.submitting = false
-
           if (!res.data.status) {
-            this.$message.error(res.data.msg)
-            return Promise.resolve()
+            throw new Error(res.data.msg)
           }
 
           this.$message.success('用户创建成功！')
           this.$router.push('/user/manage')
+        }).catch((err) => {
+          this.$message.error(err)
+        }).finally(() => {
+          this.submitting = false
         })
       })
     }
