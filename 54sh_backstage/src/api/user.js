@@ -12,7 +12,7 @@ export default {
     return Axios.get('/user/ls')
   },
   disableUser(userInfo) {
-    return Axios.post('/user/remove', userInfo)
+    return Axios.post('/user/disable', userInfo)
   },
   changeUserInfo(userInfo) {
     return Axios.post('/user/chinfo', userInfo)
