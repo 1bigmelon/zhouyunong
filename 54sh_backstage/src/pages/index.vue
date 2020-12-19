@@ -181,7 +181,7 @@ export default {
     .greeting-box {
       height: 1.8rem;
       min-width: 100%;
-      margin-bottom: 2rem;
+      margin-bottom: 1.5rem;
       overflow: hidden;
 
       span {
