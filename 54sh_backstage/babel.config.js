@@ -10,6 +10,7 @@ module.exports = {
         libraryDirectory: 'es',
         style: true
       }
-    ]
+    ],
+    '@babel/plugin-proposal-optional-chaining'
   ]
 }
