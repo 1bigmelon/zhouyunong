@@ -40,6 +40,10 @@ export default {
 </script>
 
 <style lang="scss">
+  html {
+    overflow: hidden;
+  }
+
   #app {
     height: 100%;
     width: 100%;
@@ -58,15 +62,18 @@ export default {
   .button-color-green {
     background-color: #52C41A;
     border-color: #52C41A;
+    color: white;
 
     &:hover, &:focus {
       background-color: #73d13d;
       border-color: #73d13d;
+      color: white;
     }
 
     &:active, &.active {
       background-color: #389e0d;
       border-color: #389e0d;
+      color: white;
     }
   }
 
