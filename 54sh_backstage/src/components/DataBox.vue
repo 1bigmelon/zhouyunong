@@ -4,7 +4,7 @@
       <a-icon :type="icon" style="font-size: 1.5rem;"></a-icon>
     </div>
     <div class="title">{{ title }}</div>
-    <div class="value">{{ value }}</div>
+    <div class="value">{{ value === -1 ? 'loading' : value }}</div>
   </div>
 </template>
 
@@ -38,19 +38,23 @@ export default {
     @extend .component;
 
     width: 11rem;
-    transition: all .2s ease;
+    transition: color .2s ease;
+    transition: transform .4s ease;
     text-align: center;
 
     &:hover {
       cursor: pointer;
       color: $theme-color;
-      transition: all .2s ease;
+      transform: translateY(-3px);
+      transition: color .2s ease;
+      transition: transform .4s ease;
     }
 
     .icon-box {
       height: 3rem;
       width: auto;
       position: relative;
+      z-index: 0;
 
       i {
         z-index: 999;
