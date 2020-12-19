@@ -11,6 +11,15 @@
       </div>
       <div class="user-list-box">
         <a-table :columns="columns" row-key="id" :data-source="userList">
+          <template slot="email" slot-scope="text">
+            <span>{{ text ? text : '-' }}</span>
+          </template>
+          <template slot="ip" slot-scope="text">
+            <span>{{ text ? text : '-' }}</span>
+          </template>
+          <template slot="recentLoginTime" slot-scope="text">
+            <span>{{ text ? text : '-' }}</span>
+          </template>
           <template slot="status" slot-scope="text, record">
             <span :style="`color: ${record.status ? '#0de20d' : '#fc243a'};`">{{ text }}</span>
           </template>
@@ -27,7 +36,7 @@
               size="small"
               style="font-size: .7rem;"
               @click="record.status ? disable(record.id) : enable(record.id)"
-            >停用</a-button>
+            >{{ record.status ? '停用' : '启用' }}</a-button>
           </template>
         </a-table>
       </div>
@@ -80,21 +89,24 @@ const columns = [
     key: 'email',
     dataIndex: 'email',
     width: '15%',
-    align: 'center'
+    align: 'center',
+    scopedSlots: { customRender: 'email' }
   },
   {
     title: '最近登录IP',
     key: 'ip',
     dataIndex: 'last_ip',
     width: '10%',
-    align: 'center'
+    align: 'center',
+    scopedSlots: { customRender: 'ip' }
   },
   {
     title: '最近登录时间',
     key: 'recentLoginTime',
     dataIndex: 'last_login',
     width: '',
-    align: 'center'
+    align: 'center',
+    scopedSlots: { customRender: 'recentLoginTime' }
   },
   {
     title: '状态',
@@ -136,13 +148,11 @@ export default {
           return Promise.resolve()
         }
         const { users, enabled, disabled } = res.data.data
-        this.userList = users.map((item) => {
-          return Object.assign(item, {
-            // eslint-disable-next-line camelcase
-            last_login: moment.parseZone(item.last_login.substr(5, item.last_login.length - 3)).format('YYYY[-]MM[-]DD HH[:]mm[:]ss'),
-            statusText: item.status ? '使用中' : '已停用'
-          })
-        })
+        this.userList = users.map((item) => Object.assign(item, {
+          // eslint-disable-next-line camelcase
+          last_login: moment.parseZone(item.last_login.substr(5, item.last_login.length - 3)).format('YYYY[-]MM[-]DD HH[:]mm[:]ss'),
+          statusText: item.status ? '使用中' : '已停用'
+        }))
         this.totalUser = users.length
         this.enabledUser = enabled
         this.disabledUser = disabled
@@ -163,23 +173,42 @@ export default {
         onOk() {
           that.$api.disableUser({ id })
             .then((res) => {
-              console.log(res)
-              if (res.data.status) {
-                that.$message.success('成功停用该用户')
-                that.refresh()
-                return Promise.resolve()
+              console.log(res.data)
+              if (!res.data.status) {
+                return Promise.reject(res.data.msg)
               }
-              else {
-                return Promise.reject()
+              that.$message.success('成功停用该用户')
+              that.refresh()
+            })
+            .catch((err) => {
+              this.$message.error(err?.message)
+            })
+        }
+      })
+    },
+    enable(id) {
+      const that = this
+      this.$modal.confirm({
+        title: '确认启用',
+        content: '确定要启用该用户吗？',
+        okText: '确定',
+        cancelText: '取消',
+        onOk() {
+          that.$api.changeUserInfo({ id, status: true })
+            .then((res) => {
+              console.log(res.data)
+              if (!res.data.status) {
+                return Promise.reject(res.data.msg)
               }
+              that.$message.success('成功启用该用户')
+              that.refresh()
+            })
+            .catch((err) => {
+              this.$message.error(err?.message)
             })
         },
         onCancel() {}
       })
-    },
-    enable(id) {
-      console.log('enable', id)
-
     }
   }
 }
@@ -205,7 +234,7 @@ export default {
       .search-box {
         height: 7rem;
         width: 100%;
-        background-color: pink;
+        border: pink solid 2px;
       }
     }
   }
