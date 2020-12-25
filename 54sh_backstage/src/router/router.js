@@ -28,9 +28,9 @@ const contentTitleMap = {
   'review': '文章审核',
   'manageArticle': '文章管理',
   'newCategory': '新建分类',
-  'manageCategory': '查看分类',
+  'manageCategory': '分类管理',
   'newTag': '新建标签',
-  'manageTag': '查看标签',
+  'manageTag': '标签管理',
   'newUser': '新建用户',
   'manageUser': '用户管理',
   'editUser': '编辑用户'
