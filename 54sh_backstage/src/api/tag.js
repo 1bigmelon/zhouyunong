@@ -1,8 +1,8 @@
 import { Axios } from '@/plugins/axios'
 
 export default {
-  newTag(tag) {
-    return Axios.post('tag/new', tag)
+  createTag(tagInfo) {
+    return Axios.post('tag/new', tagInfo)
   },
   getAllTags() {
     return Axios.get('tag/ls')

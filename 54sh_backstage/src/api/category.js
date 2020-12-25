@@ -1,8 +1,8 @@
 import { Axios } from '@/plugins/axios'
 
 export default {
-  newCategory(category) {
-    return Axios.post('/div/new', category)
+  createCategory(categoryInfo) {
+    return Axios.post('/div/new', categoryInfo)
   },
   getAllCategories() {
     return Axios.get('div/ls')
