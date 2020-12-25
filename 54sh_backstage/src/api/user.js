@@ -16,5 +16,8 @@ export default {
   },
   changeUserInfo(userInfo) {
     return Axios.post('/user/chinfo', userInfo)
+  },
+  searchUsers(criteria) {
+    return Axios.post('/user/search', criteria)
   }
 }
