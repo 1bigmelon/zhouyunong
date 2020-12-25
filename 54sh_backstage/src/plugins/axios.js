@@ -38,7 +38,9 @@ Axios.interceptors.response.use((res) => {
   return res
 }, (err) => {
   console.log('err: ', err)
-  this.$message.error(err.message)
+  if (err.message.startsWith('timeout')) {
+    err.message = '请求超时，请检查网络'
+  }
 
   return Promise.reject(err)
 })
