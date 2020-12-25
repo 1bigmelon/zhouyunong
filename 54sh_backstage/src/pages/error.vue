@@ -1,26 +1,20 @@
 <template>
   <div class="container">
-    <!-- dev test -->
-    new article
-    <!-- dev test -->
-
+    404
   </div>
 </template>
 
 <script>
 export default {
-  name: 'NewArticle',
+  name: 'Error',
   data() {
     return {
 
     }
-  },
-  methods: {
-
   }
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
 
 </style>

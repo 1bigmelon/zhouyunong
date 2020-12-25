@@ -37,15 +37,12 @@ Axios.interceptors.response.use((res) => {
 
   return res
 }, (err) => {
-  if (err.response.status === 401) {
-
-    /**
-     * TODO 返回到登录界面
-     */
-
+  console.log('err: ', err)
+  if (err.message.startsWith('timeout')) {
+    err.message = '请求超时，请检查网络'
   }
 
-  return Promise.reject(err.response.data)
+  return Promise.reject(err)
 })
 
 export default {

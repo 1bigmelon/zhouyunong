@@ -1,26 +1,24 @@
 <template>
   <div class="container">
     <!-- dev test -->
-    new article
+    new tag
     <!-- dev test -->
-
   </div>
 </template>
 
 <script>
 export default {
-  name: 'NewArticle',
+  name: 'Index',
   data() {
     return {
 
     }
-  },
-  methods: {
-
   }
 }
 </script>
 
-<style>
-
+<style lang="scss" scoped>
+.container{
+  @extend .component;
+}
 </style>

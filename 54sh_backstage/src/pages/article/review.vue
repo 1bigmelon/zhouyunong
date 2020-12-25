@@ -1,14 +1,14 @@
 <template>
   <div class="container">
     <!-- dev test -->
-      review
+    review
     <!-- dev test -->
   </div>
 </template>
 
 <script>
 export default {
-  name: '',
+  name: 'Review',
   data() {
     return {
 

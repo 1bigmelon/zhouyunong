@@ -1,12 +1,12 @@
 <template>
   <div class="container">
-    <div class="side-bar-box">
-      <div class="side-bar-header">
-        <div class="title-box">
-          <i class="icon"></i>
-          <span>升华网管理后台</span>
-        </div>
+    <div class="side-bar-header">
+      <div class="title-box">
+        <i class="icon"></i>
+        <span>升华网管理后台</span>
       </div>
+    </div>
+    <aside class="side-bar-box">
       <div class="side-bar">
         <menu-item
           text="首页"
@@ -29,7 +29,7 @@
             <menu-item
               text="文章审核"
               icon="audit"
-              name="reviewArticle"
+              name="review"
               to="/article/review"
             />
             <menu-item
@@ -38,10 +38,16 @@
               name="manageArticle"
               to="/article/manage"
             />
+            <menu-item
+              text="投稿管理"
+              icon="inbox"
+              name="manageContribution"
+              to="/article/contribution"
+            />
           </div>
         </div>
-        <div class="divider"></div>
-        <div id="category-manage">
+        <div v-if="userInfo.auth >= 4" class="divider"></div>
+        <div v-if="userInfo.auth >= 4" id="category-manage">
           <div class="side-bar-title">
             <span>分类管理</span>
           </div>
@@ -53,15 +59,15 @@
               to="/category/new"
             />
             <menu-item
-              text="查看分类"
+              text="分类管理"
               icon="appstore"
               name="manageCategory"
               to="/category/manage"
             />
           </div>
         </div>
-        <div class="divider"></div>
-        <div id="tag-manage">
+        <div v-if="userInfo.auth >= 4" class="divider"></div>
+        <div v-if="userInfo.auth >= 4" id="tag-manage">
           <div class="side-bar-title">
             <span>标签管理</span>
           </div>
@@ -73,24 +79,30 @@
               to="/tag/new"
             />
             <menu-item
-              text="查看标签"
-              icon="appstore"
+              text="标签管理"
+              icon="tags"
               name="manageTag"
               to="/tag/manage"
             />
           </div>
         </div>
-        <div class="divider"></div>
-        <div id="system-manage">
+        <div v-if="userInfo.auth >= 4" class="divider"></div>
+        <div v-if="userInfo.auth >= 4" id="system-manage">
           <div class="side-bar-title">
-            <span>系统管理</span>
+            <span>人员管理</span>
           </div>
           <div>
             <menu-item
-              text="人员管理"
+              text="新建用户"
+              icon="user-add"
+              name="newUser"
+              to="/user/new"
+            />
+            <menu-item
+              text="用户管理"
               icon="team"
-              name="personnel"
-              to="/system/personnel"
+              name="manageUser"
+              to="/user/manage"
             />
           </div>
         </div>
@@ -104,66 +116,109 @@
               text="退出登录"
               icon="export"
               name="logout"
+              @click="logout"
             />
           </div>
         </div>
       </div>
-    </div>
-    <div class="main">
-      <div class="header-box">
-        <div class="fold-box">
-          <a-icon type="menu-fold" style="font-size: 1.1rem;"/>
-        </div>
-        <div class="user-box">
-          <a-avatar icon="user"/>
-          <span>测试名字</span>
-          <a-icon type="caret-down"/>
+    </aside>
+    <header class="header-box">
+      <div class="fold-box">
+        <a-icon type="menu-fold" class="fold" title="收起侧栏" @click="foldSideBar" />
+        <span style="color: red;">←这个还没做</span>
+      </div>
+      <div class="user-box">
+        <div class="dropdown-box">
+          <div class="info-box">
+            <a-avatar icon="user" />
+            <span style="cursor: default;">{{ userInfo.name }}</span>
+            <a-icon type="caret-down" style="font-size: .8rem;" />
+          </div>
+          <div class="dropdown">
+            <div class="dropdown-item">
+              <div class="dropdown-content" @click="logout">
+                <a-icon type="export" />
+                <span>退出登录</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="content-box">
-        <div class="content-title" v-if="ifShowTitleBar">
-          <span>{{ contentTitle }}</span>
-        </div>
-        <div class="content">  
+    </header>
+    <main ref="page" class="content-box">
+      <div v-if="showTitleBar" class="content-title">
+        <span>{{ contentTitle }}</span>
+      </div>
+      <div class="page-box">
+        <div class="page">
           <router-view></router-view>
         </div>
+        <div class="copyright">
+          <span>2020 &copy; 升华工作室</span>
+        </div>
       </div>
-    </div>
+    </main>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 import MenuItem from '../components/MenuItem.vue'
 
 export default {
   name: 'MainLayout',
-  data() {
-    return {
-      ifShowTitleBar: true
-    }
-  },
-  methods: {
-  },
   components: {
     'menu-item': MenuItem
   },
+  data() {
+    return {
+      showTitleBar: true
+    }
+  },
   computed: {
-    ...mapState(['selectedItemName', 'contentTitle'])
+    ...mapState([
+      'selectedItemName',
+      'contentTitle',
+      'userInfo'
+    ])
   },
   watch: {
     selectedItemName(newVal) {
-      this.ifShowTitleBar = (newVal !== 'index')
+      this.showTitleBar = (newVal !== 'index')
+    },
+    contentTitle() {
+      this.$refs.page.scrollTop = 0
     }
   },
   mounted() {
-    this.ifShowTitleBar = (this.selectedItemName !== 'index')
+    this.showTitleBar = (this.selectedItemName !== 'index')
+
+    if (window.performance.navigation.type !== 1) {
+      this.verifyToken()
+        .catch(() => {
+          this.$message.error('身份已过期，请重新登录')
+          this.$router.push('/login')
+        })
+    }
+  },
+  methods: {
+    ...mapActions(['verifyToken']),
+
+    logout() {
+      localStorage.removeItem('token')
+      this.$router.push('/login')
+      this.$message.success('已退出登录')
+    },
+    foldSideBar() {
+
+    }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-  $side-bar-width: 15rem;
+  $side-bar-width: 13.5rem;
+  $header-height: 3.8rem;
 
   .container {
     height: max-content;
@@ -171,6 +226,7 @@ export default {
     // height: 100%;
     width: 100%;
     display: flex;
+    background-color: rgb(243, 247, 250);
 
     .divider {
       height: 1px;
@@ -179,49 +235,67 @@ export default {
       margin: .8rem auto .4rem auto;
     }
 
-    .side-bar-box {
-      height: 100%;
+    .side-bar-header {
+      height: $header-height;
       width: $side-bar-width;
+      background-color: $theme-color;
+      box-shadow: 0 0 .5px .5px $theme-color;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: fixed;
+      z-index: 999;
 
-      .side-bar-header {
-        height: 3.8rem;
-        width: 100%;
-        background-color: rgb(127, 99, 244);
-        box-shadow: 0 0 .5px .5px rgb(127, 99, 244);
+      .title-box {
+        $icon-size: 2.2rem;
         display: flex;
-        justify-content: center;
-        align-items: center;
 
-        .title-box {
-          $icon-size: 2.2rem;
-          display: flex;
+        .icon {
+          height: $icon-size;
+          width: $icon-size;
+          background-image: url('../assets/logo.png');
+          background-size: contain;
+          vertical-align: middle;
+        }
 
-          .icon {
-            height: $icon-size;
-            width: $icon-size;
-            background-image: url('../assets/logo.png');
-            background-size: contain;
-            vertical-align: middle;
-          }
+        span {
+          color: white;
+          height: $icon-size;
+          display: inline-flex;
+          align-items: center;
+          margin-left: .5rem;
 
-          span {
-            color: white;
-            height: $icon-size;
-            display: inline-flex;
-            align-items: center;
-            margin-left: .5rem;
-
-            &:nth-child(2) {
-              font-size: 1.1rem;
-            }
+          &:nth-child(2) {
+            font-size: 1.1rem;
           }
         }
       }
+    }
+
+    .side-bar-box {
+      height: calc(100% - 3.8rem);
+      width: $side-bar-width;
+      position: fixed;
+      top: $header-height;
+      overflow: auto;
+      background-color: #fff;
+      z-index: 999;
+      box-shadow: 0 0 .2px .2px rgb(0, 0, 0, 0.1);
+
+      &::-webkit-scrollbar-track,
+      &::-webkit-scrollbar,
+      &::-webkit-scrollbar-thumb {
+        display: none;
+      }
 
       .side-bar {
-        height: calc(100% - 4rem);
+        height: calc(max-content - 4rem);
         width: 100%;
-        padding-top: .5rem;
+        padding: {
+          top: .5rem;
+          bottom: 1rem;
+        }
+        z-index: 999;
 
         .side-bar-title {
           height: 2rem;
@@ -236,71 +310,148 @@ export default {
         }
       }
     }
-    
-    .main {
-      min-height: 100%;
-      width: 100%;
-      z-index: -1;
 
-      .header-box {
-        height: 3.8rem;
-        width: 100%;
+    .header-box {
+      height: $header-height;
+      width: calc(100% - 13rem);
+      display: flex;
+      align-items: center;
+      position: fixed;
+      left: $side-bar-width;
+      background-color: #fff;
+      z-index: 999;
+      box-shadow: 0 0 .2px .2px rgb(0, 0, 0, 0.1);
+
+      .fold-box {
+        position: absolute;
+        left: 1.5rem;
         display: flex;
         align-items: center;
-        position: relative;
 
-        .user-box {
-          height: 2rem;
-          width: 10rem;
-          display: flex;
-          align-items: center;
-          position: absolute;
-          right: 1rem;
+        .fold {
+          font-size: 1.1rem;
+          transition: all .3s ease;
 
-          span:nth-child(2) {
-            height: 100%;
-            font-size: 1rem;
-            padding-left: .8rem;
-            padding-right: .5rem;
-            line-height: 1.9rem;
+          &:hover {
+            color: $theme-color;
+            cursor: pointer;
+            transform: scale(1.1);
+            transition: all .3s ease;
           }
-        }
-
-        .fold-box {
-          position: absolute;
-          left: 1.5rem;
-          display: flex;
-          align-items: center;
         }
       }
 
-      .content-box {
-        height: calc(100% - 4rem);
-        width: 100%;
-        background-color: rgb(243, 247, 250);
+      .user-box {
+        display: flex;
+        align-items: center;
+        position: absolute;
+        right: 2rem;
+        top: 1rem;
+        min-width: 10rem;
 
-        .content-title {
-          height: 3rem;
+        .dropdown-box {
+          font-size: 1rem;
           width: 100%;
-          background-color: rgb(232, 231, 249);
-          display: flex;
-          align-items: center;
-          padding-left: 1.5rem;
-          color: rgb(115, 97, 211);
-          font-size: 1.1rem;
+          position: relative;
+
+          .info-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-bottom: .5rem;
+
+            span:nth-child(2) {
+              height: 100%;
+              padding-left: .8rem;
+              padding-right: .5rem;
+              line-height: 1.9rem;
+            }
+          }
+
+          &:hover .dropdown {
+            display: block;
+            animation: dropdown-list .3s ease;
+          }
+
+          .dropdown {
+            width: 100%;
+            background-color: #FFF;
+            border-radius: 7px;
+            box-shadow: 1px 1.5px 10px -5px $theme-color;
+            padding: .5rem 0;
+            display: none;
+
+            .dropdown-item {
+              height: 2rem;
+              display: flex;
+              align-items: center;
+              transition: background-color linear .15s;
+
+              &:hover {
+                background-color: rgb(242, 240, 254);
+                transition: background-color linear .15s;
+                cursor: pointer;
+                color: $theme-color;
+              }
+
+              .dropdown-content {
+                margin-left: 1.5rem;
+                font-size: .9rem;
+
+                span {
+                  padding-left: 1rem;
+                }
+              }
+            }
+          }
         }
+      }
+    }
 
-        .content {
-          min-height: calc(100% - 3rem);
-          width: 100%;
-          padding: 1rem 1rem;
+    .content-box {
+      height: calc(100% - 3.8rem);
+      width: calc(100% - 13.5rem);
+      position: fixed;
+      right: 0;
+      bottom: 0;
+      overflow: {
+        x: hidden;
+        y: auto;
+      }
+
+      .content-title {
+        height: 3rem;
+        width: 100%;
+        background-color: rgb(232, 231, 249);
+        display: flex;
+        align-items: center;
+        padding-left: 1.5rem;
+        color: rgb(115, 97, 211);
+        font-size: 1.1rem;
+      }
+
+      .page-box {
+        width: 100%;
+        padding: 2rem;
+
+        .copyright {
+          text-align: center;
+          color: rgb(150, 150, 150);
+          margin-top: 1.5rem;
         }
       }
     }
   }
 
-  // @font-face {
-  //   font-family: 'Hiragino';
-  //   src: url(../assets/fonts/HiraginoSansGB.ttf);
-  // }
+  @keyframes dropdown-list {
+    from {
+      transform: translateY(-7px);
+      opacity: 0;
+    }
+
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
 </style>

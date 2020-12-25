@@ -1,7 +1,15 @@
-import authAPI from '../api/auth'
+import auth from '@/api/auth'
+import org from '@/api/org'
+import user from '@/api/user'
+import category from '@/api/category'
+import tag from '@/api/tag'
 
 const Repository = {
-  ...authAPI
+  ...auth,
+  ...org,
+  ...user,
+  ...category,
+  ...tag
 }
 
 export default {

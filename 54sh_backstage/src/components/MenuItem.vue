@@ -14,11 +14,6 @@ import { mapState, mapActions } from 'vuex'
 
 export default {
   name: 'MenuItem',
-  data() {
-    return {
-      isSelected: false
-    }
-  },
   props: {
     text: {
       type: String,
@@ -37,18 +32,9 @@ export default {
       default: '/index'
     }
   },
-  methods: {
-    ...mapActions(['setSelectedItemName']),
-
-    onClick() {
-      if (this.name === 'logout') { 
-        localStorage.removeItem('token')
-        this.$router.push('/login')
-        this.$message.success('已退出登录')
-        return
-      }
-      this.setSelectedItemName(this.name)
-      this.$router.push(this.to)
+  data() {
+    return {
+      isSelected: false
     }
   },
   computed: {
@@ -61,13 +47,25 @@ export default {
   },
   mounted() {
     this.isSelected = (this.name === this.selectedItemName)
+  },
+  methods: {
+    ...mapActions(['setSelectedItemName']),
+
+    onClick() {
+      if (this.name === 'logout') {
+        this.$emit('click')
+        return
+      }
+      this.setSelectedItemName(this.name)
+      this.$router.push(this.to)
+    }
   }
 }
 </script>
 
 <style lang="scss" scoped>
   .menu-item--container {
-    height: 2.7rem;
+    height: 2.9rem;
     width: 100%;
     border-left: #FFF solid 3px;
     display: flex;
@@ -82,18 +80,14 @@ export default {
     }
   }
 
-  .selected, .unselected {
-    margin: .2rem 0;
-  }
-  
-  .selected {  
+  .selected {
     background-color: rgb(242, 240, 254);
-    border-left: rgb(124, 97, 241) solid 3px;
+    border-left: $theme-color solid 3px;
     box-shadow: 0 0 1px 1px rgb(240, 238, 248) inset;
-    
+
     .menu-item--container {
       padding-left: 1.8rem;
-      color: rgb(123, 94, 233);
+      color: $theme-color;
       transition: background-color linear .15s;
       border: none;
     }
@@ -101,7 +95,7 @@ export default {
 
   .unselected {
     transition: background-color linear .15s;
-    
+
     .menu-item--container {
       padding-left: 1.8rem;
       transition: background-color linear .15s;
@@ -109,7 +103,7 @@ export default {
 
     &:hover .menu-item--container {
       background-color: rgb(247, 247, 247);
-      border-left: rgb(124, 97, 241) solid 3px;
+      border-left: $theme-color solid 3px;
       transition: all linear .15s;
     }
   }
