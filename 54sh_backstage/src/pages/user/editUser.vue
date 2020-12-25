@@ -124,92 +124,58 @@ export default {
           {
             required: true,
             message: '请输入用户名'
-          }]
-        }],
-        name: [
-          'name',
-          {
-            rules: [
-              {
-                required: true,
-                message: '请输入真实姓名'
-              }
-            ]
           }
-        ],
-        firstPwd: [
-          'password',
+        ] }],
+        name: ['name', { rules: [
           {
-            rules: [
-              {
-                min: 6,
-                message: '请输入至少6位密码'
-              },
-              {
-                validator: this.validateFirstPassword,
-              },
-            ],
-          },
-        ],
-        secondPwd: [
-          'confirm',
+            required: true,
+            message: '请输入真实姓名'
+          }
+        ] }],
+        firstPwd: ['password', { rules: [
           {
-            rules: [
-              {
-                validator: this.validateSecondPassword,
-              },
-            ],
+            min: 6,
+            message: '请输入至少6位密码'
           },
-        ],
+          {
+            validator: this.validateFirstPassword,
+          },
+        ] }],
+        secondPwd: ['confirm', {
+          rules: [
+            {
+              validator: this.validateSecondPassword,
+            },
+          ] }],
         fixedPhone: ['fixedPhone'],
-        cellPhone: [
-          'cellPhone',
+        cellPhone: ['cellPhone', { rules: [
           {
-            rules: [
-              {
-                required: true,
-                message: '请输入手机号码'
-              },
-              {
-                len: 11,
-                message: '请输入正确的手机号码'
-              }
-            ],
+            required: true,
+            message: '请输入手机号码'
           },
-        ],
-        email: [
-          'email',
           {
-            rules: [
-              {
-                type: 'email',
-                message: '请输入正确的电子邮箱',
-              }
-            ],
-          },
-        ],
-        role: [
-          'role',
-          {
-            rules: [
-              {
-                required: true,
-                message: '请选择权限角色'
-              }
-            ]
+            len: 11,
+            message: '请输入正确的手机号码'
           }
-        ],
-        department: [
-          'department',
+        ] }],
+        email: ['email', { rules: [
           {
-            rules: [
-              {
-                required: true,
-                message: '请选择所属部门'
-              }
-            ]
+            type: 'email',
+            message: '请输入正确的电子邮箱',
           }
-        ]
+        ] }],
+        role: ['role', { rules: [
+          {
+            required: true,
+            message: '请选择权限角色'
+          }
+        ] }],
+        department: ['department', { rules: [
+          {
+            required: true,
+            message: '请选择所属部门'
+          }
+        ] }]
       },
       validPwd: false,
       orgList: [],
@@ -219,13 +185,15 @@ export default {
     }
   },
   mounted() {
-    this.$api.getUserInfo(this.$route.params.username)
+    Promise.all([this.$api.getUserInfo(this.$route.params.username), this.$api.getAllOrgs()])
       .then((res) => {
-        if (!res.data.status) {
-          this.$message.error(res.data.msg)
-          return Promise.resolve()
-        }
-        const { id, user_id, name, tel, phone, email, role, org } = res.data.data
+        res.forEach(({ data }) => {
+          if (!data.status) {
+            return Promise.reject(data.msg)
+          }
+        })
+
+        const { id, user_id, name, tel, phone, email, role, org } = res[0].data.data
         this.userInfo = {
           id,
           username: user_id,
@@ -246,21 +214,8 @@ export default {
           role,
           department: org.name
         })
-      })
-      .catch((err) => {
-        this.$message.error(err.message)
-      })
 
-    this.$api.getAllOrgs()
-      .then((res) => {
-        if (!res.data.status) {
-          this.$message.error(res.data.msg)
-          return Promise.resolve()
-        }
         this.orgList = res.data.data.orgs
-      })
-      .catch((err) => {
-        this.$message.error(err.message)
       })
   },
   methods: {
