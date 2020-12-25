@@ -12,21 +12,21 @@
             v-decorator="rules['id']"
             disabled
             allow-clear
-          ></a-input>
+          />
         </a-form-item>
         <a-form-item label="用户名">
           <a-input
             v-decorator="rules['username']"
             placeholder="请输入新的用户名"
             allow-clear
-          ></a-input>
+          />
         </a-form-item>
         <a-form-item label="真实姓名">
           <a-input
-            v-decorator="rules['realname']"
+            v-decorator="rules['name']"
             placeholder="请输入新的真实姓名"
             allow-clear
-          ></a-input>
+          />
         </a-form-item>
         <a-form-item label="密码">
           <a-input-password
@@ -48,21 +48,21 @@
             v-decorator="rules['fixedPhone']"
             placeholder="请输入新的固定电话"
             allow-clear
-          ></a-input>
+          />
         </a-form-item>
         <a-form-item label="手机号码">
           <a-input
             v-decorator="rules['cellPhone']"
             placeholder="请输入新的手机号码"
             allow-clear
-          ></a-input>
+          />
         </a-form-item>
         <a-form-item label="邮箱">
           <a-input
             v-decorator="rules['email']"
             placeholder="请输入新的邮箱"
             allow-clear
-          ></a-input>
+          />
         </a-form-item>
         <a-form-item label="权限角色">
           <a-select
@@ -99,7 +99,7 @@
 
 const userInfoMap = {
   username: 'user_id',
-  realname: 'name',
+  name: 'name',
   fixedPhone: 'tel',
   cellPhone: 'phone',
   department: 'org'
@@ -119,22 +119,15 @@ export default {
       },
       form: this.$form.createForm(this, { name: 'new_user' }),
       rules: {
-        id: [
-          'id'
-        ],
-        username: [
-          'username',
+        id: ['id'],
+        username: ['username', { rules: [
           {
-            rules: [
-              {
-                required: true,
-                message: '请输入用户名'
-              }
-            ]
-          }
-        ],
-        realname: [
-          'realname',
+            required: true,
+            message: '请输入用户名'
+          }]
+        }],
+        name: [
+          'name',
           {
             rules: [
               {
@@ -236,7 +229,7 @@ export default {
         this.userInfo = {
           id,
           username: user_id,
-          realname: name,
+          name,
           fixedPhone: tel,
           cellPhone: phone,
           email,
@@ -246,7 +239,7 @@ export default {
         this.form.setFieldsValue({
           id,
           username: user_id,
-          realname: name,
+          name,
           fixedPhone: tel,
           cellPhone: phone,
           email,
