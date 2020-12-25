@@ -186,8 +186,7 @@ export default {
     selectedItemName(newVal) {
       this.showTitleBar = (newVal !== 'index')
     },
-    contentTitle(n, o) {
-      console.log('this.$refs.page.scrollTop: ', this.$refs.page.scrollTop)
+    contentTitle() {
       this.$refs.page.scrollTop = 0
     }
   },
