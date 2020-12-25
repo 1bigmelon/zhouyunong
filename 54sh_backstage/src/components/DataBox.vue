@@ -39,15 +39,15 @@ export default {
 
     width: 11rem;
     transition: color .2s ease;
-    transition: transform .4s ease;
+    // transition: transform .4s ease;
     text-align: center;
 
     &:hover {
       cursor: pointer;
       color: $theme-color;
-      transform: translateY(-3px);
+      // transform: translateY(-3px);
       transition: color .2s ease;
-      transition: transform .4s ease;
+      // transition: transform .4s ease;
     }
 
     .icon-box {
