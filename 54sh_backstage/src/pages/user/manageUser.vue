@@ -167,7 +167,7 @@ export default {
       totalUser: -1,
       enabledUser: -1,
       disabledUser: -1,
-      form: this.$form.createForm(this, { name: 'search' }),
+      form: this.$form.createForm(this, { name: 'user_search' }),
       rules: {
         name: ['name'],
         role: ['role', {

@@ -8,14 +8,14 @@
             v-decorator="rules['username']"
             placeholder="请输入用户名"
             allow-clear
-          ></a-input>
+          />
         </a-form-item>
         <a-form-item label="真实姓名">
           <a-input
             v-decorator="rules['name']"
             placeholder="请输入真实姓名"
             allow-clear
-          ></a-input>
+          />
         </a-form-item>
         <a-form-item label="密码">
           <a-input-password
@@ -37,21 +37,21 @@
             v-decorator="rules['fixedPhone']"
             placeholder="请输入固定电话"
             allow-clear
-          ></a-input>
+          />
         </a-form-item>
         <a-form-item label="手机号码">
           <a-input
             v-decorator="rules['cellPhone']"
             placeholder="请输入手机号码"
             allow-clear
-          ></a-input>
+          />
         </a-form-item>
         <a-form-item label="邮箱">
           <a-input
             v-decorator="rules['email']"
             placeholder="请输入邮箱"
             allow-clear
-          ></a-input>
+          />
         </a-form-item>
         <a-form-item label="权限角色">
           <a-select
@@ -95,105 +95,65 @@ export default {
       },
       form: this.$form.createForm(this, { name: 'new_user' }),
       rules: {
-        username: [
-          'username',
+        username: ['username', { rules: [
           {
-            rules: [
-              {
-                required: true,
-                message: '请输入用户名'
-              }
-            ]
+            required: true,
+            message: '请输入用户名'
           }
-        ],
-        name: [
-          'name',
-          {
-            rules: [
-              {
-                required: true,
-                message: '请输入真实姓名'
-              }
-            ]
+        ] }],
+        name: ['name', {
+          rules: [{
+            required: true,
+            message: '请输入真实姓名'
           }
-        ],
-        firstPwd: [
-          'password',
+          ] }],
+        firstPwd: ['password', { rules: [
           {
-            rules: [
-              {
-                required: true,
-                message: '请输入密码!'
-              },
-              {
-                min: 6,
-                message: '请输入至少6位密码!'
-              },
-              {
-                validator: this.validateFirstPassword,
-              },
-            ],
+            required: true,
+            message: '请输入密码!'
           },
-        ],
-        secondPwd: [
-          'confirm',
           {
-            rules: [
-              {
-                required: true,
-                message: '请输入与上面一致的密码!',
-              },
-              {
-                validator: this.validateSecondPassword,
-              },
-            ],
+            min: 6,
+            message: '请输入至少6位密码!'
           },
-        ],
+          {
+            validator: this.validateFirstPassword,
+          },
+        ] }],
+        secondPwd: ['confirm', { rules: [
+          {
+            required: true,
+            message: '请输入与上面一致的密码!',
+          },
+          {
+            validator: this.validateSecondPassword,
+          },
+        ] }],
         fixedPhone: ['fixedPhone'],
-        cellPhone: [
-          'cellPhone',
+        cellPhone: ['cellPhone', { rules: [
           {
-            rules: [
-              {
-                required: true,
-                message: '请输入手机号码!'
-              }
-            ],
-          },
-        ],
-        email: [
-          'email',
-          {
-            rules: [
-              {
-                type: 'email',
-                message: '请输入正确的电子邮箱!',
-              }
-            ],
-          },
-        ],
-        role: [
-          'role',
-          {
-            rules: [
-              {
-                required: true,
-                message: '请选择权限角色!'
-              }
-            ]
+            required: true,
+            message: '请输入手机号码!'
           }
-        ],
-        department: [
-          'department',
+        ] }],
+        email: ['email', { rules: [
           {
-            rules: [
-              {
-                required: true,
-                message: '请选择所属部门!'
-              }
-            ]
+            type: 'email',
+            message: '请输入正确的电子邮箱!',
           }
-        ]
+        ] }],
+        role: ['role', { rules: [
+          {
+            required: true,
+            message: '请选择权限角色!'
+          }
+        ] }],
+        department: ['department', { rules: [
+          {
+            required: true,
+            message: '请选择所属部门!'
+          }
+        ] }]
       },
       validPwd: false,
       orgList: [],
@@ -241,19 +201,20 @@ export default {
         }
 
         this.submitting = true
+        const { name, username, password, fixedPhone, cellPhone, email, role, department } = values
         this.$api.createUser({
-          name: values.name,
+          name,
           // eslint-disable-next-line camelcase
-          user_id: values.username,
-          password: values.password,
-          tel: values.fixedPhone,
-          phone: values.cellPhone,
-          email: values.email,
-          role: values.role,
-          org: values.department
+          user_id: username,
+          password,
+          tel: fixedPhone,
+          phone: cellPhone,
+          email,
+          role,
+          org: department
         }).then((res) => {
           if (!res.data.status) {
-            throw new Error(res.data.msg)
+            return Promise.reject(res.data.msg)
           }
 
           this.$message.success('用户创建成功！')

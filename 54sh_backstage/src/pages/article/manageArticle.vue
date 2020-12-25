@@ -106,7 +106,7 @@ const color = ['pink', 'red', 'orange', 'green', 'cyan', 'blue', 'purple']
 export default {
   name: 'ManageArticle',
   components: {
-    'data-box': DataBox
+    DataBox
   },
   data() {
     return {
