@@ -12,7 +12,7 @@
         </a-form-item>
         <a-form-item label="真实姓名">
           <a-input
-            v-decorator="rules['realname']"
+            v-decorator="rules['name']"
             placeholder="请输入真实姓名"
             allow-clear
           ></a-input>
@@ -106,8 +106,8 @@ export default {
             ]
           }
         ],
-        realname: [
-          'realname',
+        name: [
+          'name',
           {
             rules: [
               {
@@ -205,10 +205,12 @@ export default {
     this.$api.getAllOrgs()
       .then((res) => {
         if (!res.data.status) {
-          this.$message.error(res.data.msg)
-          return Promise.resolve()
+          return Promise.reject(res.data.msg)
         }
         this.orgList = res.data.data.orgs
+      })
+      .catch((err) => {
+        this.$message.error(err?.message)
       })
   },
   methods: {
@@ -240,7 +242,7 @@ export default {
 
         this.submitting = true
         this.$api.createUser({
-          name: values.realname,
+          name: values.name,
           // eslint-disable-next-line camelcase
           user_id: values.username,
           password: values.password,
