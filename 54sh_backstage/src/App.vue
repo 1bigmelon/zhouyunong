@@ -1,11 +1,15 @@
 <template>
-  <div id="app">
-    <router-view v-if="isRouterAlive"></router-view>
-  </div>
+  <a-config-provider :locale="zhCN">
+    <div id="app">
+      <router-view v-if="isRouterAlive"></router-view>
+    </div>
+  </a-config-provider>
 </template>
 
 <script>
 import { mapActions } from 'vuex'
+import zhCN from 'ant-design-vue/lib/locale-provider/zh_CN'
+
 export default {
   name: '',
   provide() {
@@ -15,13 +19,11 @@ export default {
   },
   data() {
     return {
-      isRouterAlive: true
+      isRouterAlive: true,
+      zhCN
     }
   },
   mounted() {
-    console.log('document.body.clientHeight: ', document.body.clientHeight)
-    console.log('document.body.clientWidth: ', document.body.clientWidth)
-
     if (localStorage.getItem('userInfo')) {
       this.setUserInfo(JSON.parse(localStorage.getItem('userInfo')))
     }
