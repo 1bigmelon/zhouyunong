@@ -12,8 +12,13 @@
         </a-form>
       </div> -->
       <div class="tag-list-box">
-        <a-table :columns="columns" row-key="id" :data-source="showedList">
-
+        <a-table :columns="columns" row-key="id" :data-source="tagList">
+          <template slot="description" slot-scope="text">
+            <span>{{ text ? text : '无' }}</span>
+          </template>
+          <template slot="status" slot-scope="text, record">
+            <span :style="`color: ${record.status ? '#0de20d' : '#fc243a'};`">{{ text }}</span>
+          </template>
         </a-table>
       </div>
     </div>
@@ -50,7 +55,8 @@ const columns = [
     title: '描述',
     key: 'description',
     dataIndex: 'description',
-    width: '18%'
+    width: '18%',
+    scopedSlots: { customRender: 'description' }
   },
   {
     title: '最近修改时间',
@@ -71,7 +77,8 @@ const columns = [
     key: 'status',
     dataIndex: 'statusText',
     width: '5%',
-    align: 'center'
+    align: 'center',
+    scopedSlots: { customRender: 'status' }
   },
   {
     title: '操作',
@@ -88,16 +95,18 @@ export default {
   },
   data() {
     return {
+      // data box
       totalTag: -1,
       enabledTag: -1,
       disabledTag: -1,
+      // search
       form: this.$form.createForm(this, { name: 'tag_search' }),
       rules: {},
       categoryList: [],
       orgList: [],
+      // table
       columns,
-      tagList: [],
-      showedList: []
+      tagList: []
     }
   },
   mounted() {
@@ -109,7 +118,7 @@ export default {
       console.log('res: ', res)
       res.forEach((item) => {
         if (!item.data.status) {
-          return Promise.reject(item.data.msg)
+          return Promise.reject(new Error(item.data.msg))
         }
       })
 
@@ -119,12 +128,13 @@ export default {
         last_modify: moment.parseZone(item.last_modify.substr(5, item.last_modify.length - 3)).format('YYYY[-]MM[-]DD HH[:]mm[:]ss'),
         statusText: item.status ? '使用中' : '已停用'
       }))
-      this.showedList = this.tagList
       this.totalTag = tags.length
 
       this.orgList = res[1].data.data.orgs
 
       this.categoryList = res[2].data.data.divs
+    }).catch((err) => {
+      this.$message.error(err.message)
     })
   },
   methods: {
