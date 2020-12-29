@@ -1,4 +1,5 @@
 import axios from 'axios'
+import router from '@/router/router'
 
 /**
  * TODO 配置baseURL
@@ -40,6 +41,10 @@ Axios.interceptors.response.use((res) => {
   console.log('err: ', err)
   if (err.message.startsWith('timeout')) {
     err.message = '请求超时，请检查网络'
+  }
+  if (err.message.endsWith('401')) {
+    err.message = '身份已过期，请重新登录'
+    router.push('/login')
   }
 
   return Promise.reject(err)
