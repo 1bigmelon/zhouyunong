@@ -1,9 +1,9 @@
 <template>
   <div class="container">
     <div class="data-box">
-      <data-box icon="team" title="用户总数" :value="totalUser" />
-      <data-box icon="user" title="启用中用户数" :value="enabledUser" />
-      <data-box icon="user-delete" title="已停用用户数" :value="disabledUser" />
+      <data-box icon="team" title="用户总数" :value="totalUser" @click="dataBoxHdl" />
+      <data-box icon="user" title="启用中用户数" :value="enabledUser" @click="dataBoxHdl({ status: '使用中' })" />
+      <data-box icon="user-delete" title="已停用用户数" :value="disabledUser" @click="dataBoxHdl({ status: '已停用' })" />
     </div>
     <div class="content-box">
       <div class="search-box">
@@ -28,49 +28,59 @@
           <a-form-item label="用户状态">
             <a-select v-decorator="rules['status']" placeholder="用户状态" style="width: 10rem;">
               <a-select-option key="all" value="all">全部</a-select-option>
-              <a-select-option key="enabled" :value="1">使用中</a-select-option>
-              <a-select-option key="disabled" :value="0">已停用</a-select-option>
+              <a-select-option key="enabled" value="使用中">使用中</a-select-option>
+              <a-select-option key="disabled" value="已停用">已停用</a-select-option>
             </a-select>
           </a-form-item>
           <div class="operation-box">
-            <a-button type="primary" html-type="submit" :loading="searching">搜索</a-button>
+            <a-button ref="submit" type="primary" html-type="submit" :loading="searching">搜索</a-button>
             <a-popconfirm title="确定清空？" ok-text="确定" cancel-text="取消" @confirm="reset">
               <a style="font-size: .9rem; margin-left: 1rem;">清空</a>
             </a-popconfirm>
           </div>
         </a-form>
       </div>
-      <div class="user-list-box">
-        <a-table :columns="columns" row-key="id" :data-source="showedList">
-          <template slot="email" slot-scope="text">
-            <span>{{ text ? text : '-' }}</span>
-          </template>
-          <template slot="ip" slot-scope="text">
-            <span>{{ text ? text : '-' }}</span>
-          </template>
-          <template slot="recentLoginTime" slot-scope="text">
-            <span>{{ text ? text : '-' }}</span>
-          </template>
-          <template slot="status" slot-scope="text, record">
-            <span :style="`color: ${record.status ? '#0de20d' : '#fc243a'};`">{{ text }}</span>
-          </template>
-          <template slot="operation" slot-scope="text, record">
-            <a-button
-              type="primary"
-              size="small"
-              style="font-size: .7rem; margin-right: .5rem;"
-              @click="edit(record.user_id)"
-            >编辑</a-button>
-            <a-button
-              :type="record.status ? 'danger' : 'default'"
-              :class="record.status ? '' : 'button-color-green'"
-              size="small"
-              style="font-size: .7rem;"
-              @click="record.status ? disable(record.id) : enable(record.id)"
-            >{{ record.status ? '停用' : '启用' }}</a-button>
-          </template>
-        </a-table>
-      </div>
+      <a-spin tip="加载中..." :delay="100" size="large" :spinning="loading">
+        <a-icon slot="indicator" type="loading" spin />
+        <div class="user-list-box">
+          <a-table :columns="columns" row-key="id" :data-source="userList" :pagination="false">
+            <template slot="email" slot-scope="text">
+              <span>{{ text ? text : '-' }}</span>
+            </template>
+            <template slot="ip" slot-scope="text">
+              <span>{{ text ? text : '-' }}</span>
+            </template>
+            <template slot="recentLoginTime" slot-scope="text">
+              <span>{{ text ? text : '-' }}</span>
+            </template>
+            <template slot="status" slot-scope="text, record">
+              <span :style="`color: ${record.status ? '#0de20d' : '#fc243a'};`">{{ text }}</span>
+            </template>
+            <template slot="operation" slot-scope="text, record">
+              <a-button
+                type="primary"
+                size="small"
+                style="font-size: .7rem; margin-right: .5rem;"
+                @click="edit(record.user_id)"
+              >编辑</a-button>
+              <a-button
+                :type="record.status ? 'danger' : 'default'"
+                :class="record.status ? '' : 'button-color-green'"
+                size="small"
+                style="font-size: .7rem;"
+                @click="record.status ? disable(record.id) : enable(record.id)"
+              >{{ record.status ? '停用' : '启用' }}</a-button>
+            </template>
+          </a-table>
+          <a-pagination
+            :current="nowPage"
+            show-quick-jumper
+            :total="totalUser"
+            class="pagination"
+            @change="pageChange"
+          ></a-pagination>
+        </div>
+      </a-spin>
     </div>
   </div>
 </template>
@@ -164,9 +174,8 @@ export default {
   },
   data() {
     return {
-      totalUser: -1,
-      enabledUser: -1,
-      disabledUser: -1,
+      loading: true,
+      // search
       form: this.$form.createForm(this, { name: 'user_search' }),
       rules: {
         name: ['name'],
@@ -182,46 +191,49 @@ export default {
       },
       orgList: [],
       searching: false,
+      // table
       columns,
       userList: [],
-      showedList: []
+      // pagination
+      nowPage: 1,
+      // data box
+      totalUser: -1,
+      enabledUser: -1,
+      disabledUser: -1,
     }
   },
   mounted() {
-    this.$api.getAllUsers()
+    Promise.all([this.$api.getUsersByPageNum(1), this.$api.getAllOrgs()])
       .then((res) => {
-        if (!res.data.status) {
-          this.$message.error(res.data.msg)
-          return Promise.resolve()
-        }
-        const { users, enabled, disabled } = res.data.data
+        res.forEach((item) => {
+          if (!item.data.status) {
+            return Promise.reject(new Error(item.data.msg))
+          }
+        })
+
+        const { users, enabled, disabled, tot, pages } = res[0].data.data
         this.userList = users.map((item) => Object.assign(item, {
           // eslint-disable-next-line camelcase
           last_login: moment.parseZone(item.last_login.substr(5, item.last_login.length - 3)).format('YYYY[-]MM[-]DD HH[:]mm[:]ss'),
           statusText: item.status ? '使用中' : '已停用',
           department: item.org?.id
         }))
-        this.showedList = this.userList
-        this.totalUser = users.length
+        this.totalUser = tot
         this.enabledUser = enabled
         this.disabledUser = disabled
-      })
 
-    this.$api.getAllOrgs()
-      .then((res) => {
-        if (!res.data.status) {
-          return Promise.reject(res.data.msg)
-        }
         this.orgList = [
           {
             name: '全部',
             id: 'all'
           },
-          ...res.data.data.orgs
+          ...res[1].data.data.orgs
         ]
+
+        this.loading = false
       })
       .catch((err) => {
-        this.$message.error(err?.message)
+        this.$message.error(err.message)
       })
   },
   methods: {
@@ -232,7 +244,7 @@ export default {
         department: 'all',
         status: 'all'
       })
-      this.showedList = this.userList
+      this.$refs.submit.$el.click()
       this.$message.success('搜索条件已清空')
     },
     search(e) {
@@ -245,10 +257,10 @@ export default {
 
         const criteria = {}
         for (const key in JSON.parse(JSON.stringify(values))) {
-          if (values[key] === 'all') continue
+          if (['all', ''].includes(values[key])) continue
 
           if (key === 'status') {
-            values[key] = (values[key] === 1)
+            values[key] = (values[key] === '使用中')
           }
           Object.defineProperty(criteria, key, {
             value: values[key],
@@ -257,42 +269,31 @@ export default {
         }
         console.log('criteria: ', criteria)
 
-        this.showedList = this.userList.filter((item) => {
-          let flag = true
-          for (const key in criteria) {
-            console.log('item[key]: ', item[key])
-            console.log('criteria[key]: ', criteria[key])
-            if (item[key] !== criteria[key]) {
-              flag = false
-              break
-            }
-          }
-          console.log('flag: ', flag)
-          return flag
-        })
-        this.$message.success('搜索成功')
+        if (!Object.keys(criteria).length) {
+          this.$message.error('搜索条件不能为空')
+          return
+        }
 
-        // this.searching = true
-        // this.$api.searchUsers(criteria)
-        //   .then((res) => {
-        //     console.log(res.data)
-        //     if (!res.data.status) {
-        //       return Promise.reject(res.data.msg)
-        //     }
-        //     this.userList = res.data.data.users.map((item) => Object.assign(item, {
-        //       // eslint-disable-next-line camelcase
-        //       last_login: moment.parseZone(item.last_login.substr(5, item.last_login.length - 3)).format('YYYY[-]MM[-]DD HH[:]mm[:]ss'),
-        //       statusText: item.status ? '使用中' : '已停用'
-        //     }))
-        //     this.$message.success('搜索成功')
-        //   })
-        //   .catch((err) => {
-        //     this.$message.error(err?.message)
-        //   })
-        //   .finally(() => {
-        //     this.searching = false
-        //     this.reset()
-        //   })
+        this.searching = this.loading = true
+        this.$api.searchUsers(criteria)
+          .then((res) => {
+            console.log(res.data)
+            if (!res.data.status) {
+              return Promise.reject(res.data.msg)
+            }
+            this.userList = res.data.data.users.map((item) => Object.assign(item, {
+              // eslint-disable-next-line camelcase
+              last_login: moment.parseZone(item.last_login.substr(5, item.last_login.length - 3)).format('YYYY[-]MM[-]DD HH[:]mm[:]ss'),
+              statusText: item.status ? '使用中' : '已停用'
+            }))
+            this.$message.success('搜索成功')
+          })
+          .catch((err) => {
+            this.$message.error(err?.message)
+          })
+          .finally(() => {
+            this.searching = this.loading = false
+          })
       })
     },
     edit(username) {
@@ -311,13 +312,13 @@ export default {
             .then((res) => {
               console.log(res.data)
               if (!res.data.status) {
-                return Promise.reject(res.data.msg)
+                return Promise.reject(new Error(res.data.msg))
               }
               that.$message.success('成功停用该用户')
               that.refresh()
             })
             .catch((err) => {
-              this.$message.error(err?.message)
+              this.$message.error(err.message)
             })
         }
       })
@@ -334,17 +335,44 @@ export default {
             .then((res) => {
               console.log(res.data)
               if (!res.data.status) {
-                return Promise.reject(res.data.msg)
+                return Promise.reject(new Error(res.data.msg))
               }
               that.$message.success('成功启用该用户')
               that.refresh()
             })
             .catch((err) => {
-              this.$message.error(err?.message)
+              this.$message.error(err.message)
             })
         },
         onCancel() {}
       })
+    },
+    pageChange(page) {
+      this.nowPage = page
+      this.loading = true
+      this.$api.getUsersByPageNum(page)
+        .then((res) => {
+          if (!res.data.status) {
+            return Promise.reject(new Error(res.data.msg))
+          }
+
+          this.userList = res.data.data.users
+        })
+        .catch((err) => {
+          this.$message.error(err.message)
+        })
+        .finally(() => {
+          this.loading = false
+        })
+    },
+    dataBoxHdl(preset = {}) {
+      this.form.setFieldsValue(Object.assign({
+        name: '',
+        role: 'all',
+        department: 'all',
+        status: 'all'
+      }, preset))
+      this.$refs.submit.$el.click()
     }
   }
 }
@@ -385,6 +413,15 @@ export default {
           button {
             width: 5.5rem;
           }
+        }
+      }
+
+      .pagination {
+        text-align: right;
+        margin: {
+          top: 1.5rem;
+          bottom: .5rem;
+          right: 1rem;
         }
       }
     }
