@@ -108,7 +108,7 @@ export default {
       .then((res) => {
         console.log(res)
         if (!res.data.status) {
-          return Promise.reject(res.data.msg)
+          return Promise.reject(new Error(res.data.msg))
         }
         const { divs } = res.data.data
         this.categoryList = divs
@@ -119,7 +119,7 @@ export default {
 
       })
       .catch((err) => {
-        this.$message.error(err?.message)
+        this.$message.error(err.message)
       })
   },
   methods: {
