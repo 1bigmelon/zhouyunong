@@ -17,11 +17,13 @@ import router from './router/router'
 import {
   Message, Icon, Avatar, Input, Button,
   Table, Tag, Tooltip, Form, Select,
-  Modal, Alert, Popconfirm
+  Modal, Alert, Popconfirm, Pagination, ConfigProvider,
+  Spin
 } from 'ant-design-vue'
 Vue.use(Icon).use(Avatar).use(Input).use(Button).use(Table)
   .use(Tag).use(Tooltip).use(Form).use(Select).use(Modal)
-  .use(Alert).use(Popconfirm)
+  .use(Alert).use(Popconfirm).use(Pagination).use(ConfigProvider)
+  .use(Spin)
 
 Vue.prototype.$message = Message
 Vue.prototype.$form = Form
