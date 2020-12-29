@@ -31,16 +31,13 @@ const actions = {
     return context.$api.login(credentials)
       .then((res) => {
         if (!res.data.status) {
-          return Promise.reject(res.data.msg)
+          return Promise.reject(new Error(res.data.msg))
         }
         const userInfo = res.data.data.user
         Object.assign(userInfo, { auth: roleMap[res.data.data.user.role] })
         localStorage.setItem('userInfo', JSON.stringify(userInfo))
         localStorage.setItem('token', res.data.data.token)
         commit('setUserInfo', userInfo)
-      })
-      .catch((err) => {
-        return Promise.reject(err?.message)
       })
   },
   verifyToken() {
@@ -50,11 +47,8 @@ const actions = {
           return Promise.resolve(res)
         }
         else {
-          return Promise.reject(res.data.msg)
+          return Promise.reject(new Error(res.data.msg))
         }
-      })
-      .catch((err) => {
-        return Promise.reject(err)
       })
   }
 }
