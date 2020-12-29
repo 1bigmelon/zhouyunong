@@ -62,12 +62,7 @@ export default {
             message: '请输入标签名称'
           }
         ] }],
-        description: ['description', { rules: [
-          {
-            required: true,
-            message: '请输入标签描述'
-          }
-        ] }],
+        description: ['description'],
         category: ['category', { rules: [
           {
             required: true,
@@ -92,12 +87,15 @@ export default {
       .then((res) => {
         res.forEach((item) => {
           if (!item.data.status) {
-            return Promise.reject(item.data.msg)
+            return Promise.reject(new Error(item.data.msg))
           }
         })
         this.orgList = res[0].data.data.orgs
 
         this.categoryList = res[1].data.data.divs
+      })
+      .catch((err) => {
+        this.$message.error(err.message)
       })
   },
   methods: {
@@ -118,13 +116,13 @@ export default {
           color: 'pink'
         }).then((res) => {
           if (!res.data.status) {
-            return Promise.reject(res.data.msg)
+            return Promise.reject(new Error(res.data.msg))
           }
 
           this.$message.success('标签创建成功')
           this.$router.push('/tag/manage')
         }).catch((err) => {
-          this.$message.error(err?.message)
+          this.$message.error(err.message)
         }).finally(() => {
           this.submitting = false
         })
