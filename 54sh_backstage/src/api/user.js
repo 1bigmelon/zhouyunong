@@ -11,6 +11,9 @@ export default {
   getAllUsers() {
     return Axios.get('/user/ls')
   },
+  getUsersByPageNum(page) {
+    return Axios.post('/user/ls', { page })
+  },
   disableUser(userInfo) {
     return Axios.post('/user/disable', userInfo)
   },
