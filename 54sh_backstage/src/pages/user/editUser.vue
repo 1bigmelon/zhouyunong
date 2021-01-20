@@ -109,7 +109,7 @@ const userInfoMap = {
 }
 
 export default {
-  name: '',
+  name: 'EditUser',
   data() {
     return {
       loading: true,
@@ -200,8 +200,7 @@ export default {
         })
 
         const { id, user_id, name, tel, phone, email, role, org } = res[0].data.data
-        this.userInfo = { id }
-        this.form.setFieldsValue({
+        this.userInfo = {
           id,
           username: user_id,
           name,
@@ -210,7 +209,8 @@ export default {
           email,
           role,
           department: org.name
-        })
+        }
+        this.form.setFieldsValue(this.userInfo)
 
         this.orgList = res[1].data.data.orgs
         this.loading = false
@@ -229,8 +229,7 @@ export default {
         cancelText: '取消',
         onOk() {
           that.$router.push('/user/manage')
-        },
-        onCancel() {}
+        }
       })
     },
     inputBlurHdl(e) {
@@ -241,7 +240,7 @@ export default {
       e.preventDefault()
       this.form.validateFields((err, values) => {
         if (err) {
-          this.$message.error(err)
+          this.$message.error('请检查是否填写正确')
           return
         }
 
@@ -292,7 +291,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.container {
+  .container {
     height: 100%;
     width: 100%;
     display: flex;
