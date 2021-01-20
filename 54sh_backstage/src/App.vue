@@ -51,15 +51,20 @@ export default {
     width: 100%;
   }
 
+  .ant-table-thead > tr > th {
+    font-weight: bold;
+  }
+
   .index-list-box .ant-table-tbody > tr > td {
     padding: 0 .3rem;
     height: 4rem;
   }
 
-  .user-list-box .ant-table-tbody > tr > td,
-  .tag-list-box .ant-table-tbody > tr > td {
-    padding: 0 .3rem;
-    height: 2.8rem;
+  .user-list-box, .tag-list-box {
+    .ant-table-tbody > tr > td {
+      padding: 0 .3rem;
+      height: 2.8rem;
+    }
   }
 
   .button-color-green {
