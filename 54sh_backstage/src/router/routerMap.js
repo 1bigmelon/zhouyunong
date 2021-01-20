@@ -71,6 +71,11 @@ export const routes = [
         name: 'manageTag',
         component: () => import('@/pages/tag/manageTag')
       },
+      {
+        path: 'edit/:id',
+        name: 'editTag',
+        component: () => import('@/pages/tag/editTag')
+      }
     ]
   },
   {
