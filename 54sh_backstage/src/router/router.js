@@ -31,6 +31,7 @@ const contentTitleMap = {
   'manageCategory': '分类管理',
   'newTag': '新建标签',
   'manageTag': '标签管理',
+  'editTag': '编辑标签',
   'newUser': '新建用户',
   'manageUser': '用户管理',
   'editUser': '编辑用户'
