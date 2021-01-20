@@ -203,7 +203,7 @@ export default {
       e.preventDefault()
       this.form.validateFields((err, values) => {
         if (err) {
-          this.$message.error(err)
+          this.$message.error('请检查是否填写正确')
           return
         }
 
