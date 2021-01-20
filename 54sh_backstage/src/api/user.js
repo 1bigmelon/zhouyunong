@@ -14,8 +14,14 @@ export default {
   getUsersByPageNum(page) {
     return Axios.post('/user/ls', { page })
   },
-  disableUser(userInfo) {
-    return Axios.post('/user/disable', userInfo)
+  disableUser(id) {
+    return Axios.post('/user/disable', { id })
+  },
+  enableUser(id) {
+    return Axios.post('/user/chinfo', {
+      id,
+      status: true
+    })
   },
   changeUserInfo(userInfo) {
     return Axios.post('/user/chinfo', userInfo)
