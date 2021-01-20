@@ -5,6 +5,6 @@ export default {
     return Axios.post('/div/new', categoryInfo)
   },
   getAllCategories() {
-    return Axios.get('div/ls')
+    return Axios.get('/div/ls')
   }
 }
