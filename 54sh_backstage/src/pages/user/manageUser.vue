@@ -251,7 +251,7 @@ export default {
       e.preventDefault()
       this.form.validateFields((err, values) => {
         if (err) {
-          this.$message.error(err)
+          this.$message.error('请检查是否填写正确')
           return
         }
 
@@ -267,19 +267,12 @@ export default {
             enumerable: true
           })
         }
-        console.log('criteria: ', criteria)
-
-        if (!Object.keys(criteria).length) {
-          this.$message.error('搜索条件不能为空')
-          return
-        }
 
         this.searching = this.loading = true
         this.$api.searchUsers(criteria)
           .then((res) => {
-            console.log(res.data)
             if (!res.data.status) {
-              return Promise.reject(res.data.msg)
+              return Promise.reject(new Error(res.data.msg))
             }
             this.userList = res.data.data.users.map((item) => Object.assign(item, {
               // eslint-disable-next-line camelcase
@@ -308,9 +301,8 @@ export default {
         okText: '确定',
         cancelText: '取消',
         onOk() {
-          that.$api.disableUser({ id })
+          that.$api.disableUser(id)
             .then((res) => {
-              console.log(res.data)
               if (!res.data.status) {
                 return Promise.reject(new Error(res.data.msg))
               }
@@ -325,15 +317,15 @@ export default {
     },
     enable(id) {
       const that = this
+
       this.$modal.confirm({
         title: '确认启用',
         content: '确定要启用该用户吗？',
         okText: '确定',
         cancelText: '取消',
         onOk() {
-          that.$api.changeUserInfo({ id, status: true })
+          that.$api.enableUser(id)
             .then((res) => {
-              console.log(res.data)
               if (!res.data.status) {
                 return Promise.reject(new Error(res.data.msg))
               }
@@ -343,8 +335,7 @@ export default {
             .catch((err) => {
               this.$message.error(err.message)
             })
-        },
-        onCancel() {}
+        }
       })
     },
     pageChange(page) {
@@ -409,7 +400,6 @@ export default {
         }
 
         .operation-box {
-
           button {
             width: 5.5rem;
           }
@@ -421,7 +411,7 @@ export default {
         margin: {
           top: 1.5rem;
           bottom: .5rem;
-          right: 1rem;
+          right: 1.5rem;
         }
       }
     }
