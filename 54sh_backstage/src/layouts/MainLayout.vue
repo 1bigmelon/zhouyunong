@@ -280,7 +280,7 @@ export default {
       overflow: auto;
       background-color: #fff;
       z-index: 999;
-      box-shadow: 0 0 .2px .2px rgb(0, 0, 0, 0.1);
+      box-shadow: 0 0 .2px .2px rgba(0, 0, 0, 0.1);
 
       &::-webkit-scrollbar-track,
       &::-webkit-scrollbar,
