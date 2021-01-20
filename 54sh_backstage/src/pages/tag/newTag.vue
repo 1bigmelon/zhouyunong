@@ -2,41 +2,44 @@
   <div class="container">
     <div class="form-box">
       <a-alert :message="tipMessage" type="info" show-icon style="margin-bottom: .5rem;" />
-      <a-form class="form" :form="form" :label-col="labelCol" :wrapper-col="wrapperCol" label-align="left" @submit="submitBtnHdl">
-        <a-form-item label="名称">
-          <a-input
-            v-decorator="rules['name']"
-            placeholder="请输入名称"
-            allow-clear
-          />
-        </a-form-item>
-        <a-form-item label="描述">
-          <a-input
-            v-decorator="rules['description']"
-            placeholder="请输入描述"
-            allow-clear
-          />
-        </a-form-item>
-        <a-form-item label="所属分类">
-          <a-select
-            v-decorator="rules['category']"
-            placeholder="请选择所属分类"
-          >
-            <a-select-option v-for="(item, index) in categoryList" :key="index" :value="item.id">{{ item.name }}</a-select-option>
-          </a-select>
-        </a-form-item>
-        <a-form-item label="所属组织">
-          <a-select
-            v-decorator="rules['organization']"
-            placeholder="请选择所属部门"
-          >
-            <a-select-option v-for="(item, index) in orgList" :key="index" :value="item.id">{{ item.name }}</a-select-option>
-          </a-select>
-        </a-form-item>
-        <div class="submit-box">
-          <a-button type="primary" html-type="submit" :loading="submitting">创建标签</a-button>
-        </div>
-      </a-form>
+      <a-spin tip="加载中..." :delay="100" size="large" :spinning="loading">
+        <a-icon slot="indicator" type="loading" spin />
+        <a-form class="form" :form="form" :label-col="labelCol" :wrapper-col="wrapperCol" label-align="left" @submit="submitBtnHdl">
+          <a-form-item label="名称">
+            <a-input
+              v-decorator="rules['name']"
+              placeholder="请输入名称"
+              allow-clear
+            />
+          </a-form-item>
+          <a-form-item label="描述">
+            <a-input
+              v-decorator="rules['description']"
+              placeholder="请输入描述"
+              allow-clear
+            />
+          </a-form-item>
+          <a-form-item label="所属分类">
+            <a-select
+              v-decorator="rules['category']"
+              placeholder="请选择所属分类"
+            >
+              <a-select-option v-for="(item, index) in categoryList" :key="index" :value="item.id">{{ item.name }}</a-select-option>
+            </a-select>
+          </a-form-item>
+          <a-form-item label="所属组织">
+            <a-select
+              v-decorator="rules['organization']"
+              placeholder="请选择所属部门"
+            >
+              <a-select-option v-for="(item, index) in orgList" :key="index" :value="item.id">{{ item.name }}</a-select-option>
+            </a-select>
+          </a-form-item>
+          <div class="submit-box">
+            <a-button type="primary" html-type="submit" :loading="submitting">创建标签</a-button>
+          </div>
+        </a-form>
+      </a-spin>
     </div>
   </div>
 </template>
@@ -46,6 +49,7 @@ export default {
   name: 'NewTag',
   data() {
     return {
+      // form
       labelCol: {
         xs: { span: 24 },
         sm: { span: 8 },
@@ -79,7 +83,8 @@ export default {
       orgList: [],
       categoryList: [],
       submitting: false,
-      tipMessage: '带红色星号的为必填，不带的为选填'
+      tipMessage: '带红色星号的为必填，不带的为选填',
+      loading: true
     }
   },
   mounted() {
@@ -93,6 +98,8 @@ export default {
         this.orgList = res[0].data.data.orgs
 
         this.categoryList = res[1].data.data.divs
+
+        this.loading = false
       })
       .catch((err) => {
         this.$message.error(err.message)
@@ -103,7 +110,7 @@ export default {
       e.preventDefault()
       this.form.validateFields((err, values) => {
         if (err) {
-          this.$message.errpr(err)
+          this.$message.error('请检查是否填写正确')
           return
         }
 
