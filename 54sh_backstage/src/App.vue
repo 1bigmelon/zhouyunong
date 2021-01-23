@@ -60,7 +60,7 @@ export default {
     height: 4rem;
   }
 
-  .user-list-box, .tag-list-box {
+  .user-list-box, .tag-list-box, .org-list-box {
     .ant-table-tbody > tr > td {
       padding: 0 .3rem;
       height: 2.8rem;
