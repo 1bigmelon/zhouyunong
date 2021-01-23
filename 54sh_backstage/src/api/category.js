@@ -6,5 +6,8 @@ export default {
   },
   getAllCategories() {
     return Axios.get('/div/ls')
+  },
+  getCategoriesByPageNum(page) {
+    return Axios.get(`/div/ls?page=${page}`)
   }
 }
