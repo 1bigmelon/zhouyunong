@@ -58,7 +58,7 @@ export default {
         xs: { span: 24 },
         sm: { span: 16 },
       },
-      form: this.$form.createForm(this, { name: 'new_user' }),
+      form: this.$form.createForm(this, { name: 'new_tag' }),
       rules: {
         name: ['name', { rules: [
           {
