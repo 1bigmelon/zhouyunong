@@ -104,6 +104,31 @@ export const routes = [
     ]
   },
   {
+    path: '/org',
+    component: () => import('@/layouts/MainLayout'),
+    children: [
+      {
+        path: '',
+        redirect: () => 'manage'
+      },
+      {
+        path: 'new',
+        name: 'newOrg',
+        component: () => import('@/pages/org/newOrg')
+      },
+      {
+        path: 'manage',
+        name: 'manageOrg',
+        component: () => import('@/pages/org/manageOrg')
+      },
+      {
+        path: 'edit/:id',
+        name: 'editOrg',
+        component: () => import('@/pages/org/editOrg')
+      }
+    ]
+  },
+  {
     path: '*',
     name: 'error',
     component: () => import('@/pages/error')
