@@ -16,7 +16,7 @@ import { routes } from './routerMap'
 
 const routerConfig = {
   mode: 'history',
-  routes: routes,
+  routes,
   base: '/mgt'
 }
 
@@ -34,7 +34,10 @@ const contentTitleMap = {
   'editTag': '编辑标签',
   'newUser': '新建用户',
   'manageUser': '用户管理',
-  'editUser': '编辑用户'
+  'editUser': '编辑用户',
+  'newOrg': '新建组织',
+  'manageOrg': '组织管理',
+  'editOrg': '编辑组织'
 
 }
 
