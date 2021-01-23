@@ -79,7 +79,7 @@ export default {
         xs: { span: 24 },
         sm: { span: 16 },
       },
-      form: this.$form.createForm(this, { name: 'new_user' }),
+      form: this.$form.createForm(this, { name: 'edit_tag' }),
       rules: {
         id: ['id'],
         name: ['name', { rules: [
