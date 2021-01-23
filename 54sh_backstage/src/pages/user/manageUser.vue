@@ -279,7 +279,6 @@ export default {
               last_login: moment.parseZone(item.last_login.substr(5, item.last_login.length - 3)).format('YYYY[-]MM[-]DD HH[:]mm[:]ss'),
               statusText: item.status ? '使用中' : '已停用'
             }))
-            this.$message.success('搜索成功')
           })
           .catch((err) => {
             this.$message.error(err?.message)
