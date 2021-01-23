@@ -8,7 +8,7 @@ export default {
     return Axios.get('/tag/ls')
   },
   getTagsByPageNum(page) {
-    return Axios.post('/tag/ls', { page })
+    return Axios.get(`/tag/ls?page=${page}`)
   },
   getTagInfo(id) {
     return Axios.post('/tag/info', { id })
@@ -27,5 +27,8 @@ export default {
   },
   changeTagInfo(tagInfo) {
     return Axios.post('/tag/modify', tagInfo)
+  },
+  searchTag(tagInfo) {
+    return Axios.post('/tag/search', tagInfo)
   }
 }
