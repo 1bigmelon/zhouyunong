@@ -2,80 +2,83 @@
   <div class="container">
     <div class="form-box">
       <a-alert :message="tipMessage" type="info" show-icon style="margin-bottom: .5rem;" />
-      <a-form class="form" :form="form" :label-col="labelCol" :wrapper-col="wrapperCol" label-align="left" @submit="submitBtnHdl">
-        <a-form-item label="用户名">
-          <a-input
-            v-decorator="rules['username']"
-            placeholder="请输入用户名"
-            allow-clear
-          ></a-input>
-        </a-form-item>
-        <a-form-item label="真实姓名">
-          <a-input
-            v-decorator="rules['name']"
-            placeholder="请输入真实姓名"
-            allow-clear
-          ></a-input>
-        </a-form-item>
-        <a-form-item label="密码">
-          <a-input-password
-            v-decorator="rules['firstPwd']"
-            placeholder="请输入密码"
-            allow-clear
-            @blur="inputBlurHdl"
-          ></a-input-password>
-        </a-form-item>
-        <a-form-item label="再次确认密码">
-          <a-input-password
-            v-decorator="rules['secondPwd']"
-            placeholder="请输入与上面一致的密码"
-            allow-clear
-          ></a-input-password>
-        </a-form-item>
-        <a-form-item label="固定电话">
-          <a-input
-            v-decorator="rules['fixedPhone']"
-            placeholder="请输入固定电话"
-            allow-clear
-          ></a-input>
-        </a-form-item>
-        <a-form-item label="手机号码">
-          <a-input
-            v-decorator="rules['cellPhone']"
-            placeholder="请输入手机号码"
-            allow-clear
-          ></a-input>
-        </a-form-item>
-        <a-form-item label="邮箱">
-          <a-input
-            v-decorator="rules['email']"
-            placeholder="请输入邮箱"
-            allow-clear
-          ></a-input>
-        </a-form-item>
-        <a-form-item label="权限角色">
-          <a-select
-            v-decorator="rules['role']"
-            placeholder="请选择权限角色"
-          >
-            <a-select-option key="FirstAudit" value="一审">一审</a-select-option>
-            <a-select-option key="SecondAudit" value="二审">二审</a-select-option>
-            <a-select-option key="FinalAudit" value="终审">终审</a-select-option>
-            <a-select-option key="Admin" value="管理员">管理员</a-select-option>
-          </a-select>
-        </a-form-item>
-        <a-form-item label="所属部门">
-          <a-select
-            v-decorator="rules['department']"
-            placeholder="请选择所属部门"
-          >
-            <a-select-option v-for="(item, index) in orgList" :key="index" :value="item.id">{{ item.name }}</a-select-option>
-          </a-select>
-        </a-form-item>
-        <div class="submit-box">
-          <a-button type="primary" html-type="submit" :loading="submitting">创建用户</a-button>
-        </div>
-      </a-form>
+      <a-spin tip="加载中..." :delay="100" size="large" :spinning="loading">
+        <a-icon slot="indicator" type="loading" spin />
+        <a-form class="form" :form="form" :label-col="labelCol" :wrapper-col="wrapperCol" label-align="left" @submit="submitBtnHdl">
+          <a-form-item label="用户名">
+            <a-input
+              v-decorator="rules['username']"
+              placeholder="请输入用户名"
+              allow-clear
+            />
+          </a-form-item>
+          <a-form-item label="真实姓名">
+            <a-input
+              v-decorator="rules['name']"
+              placeholder="请输入真实姓名"
+              allow-clear
+            />
+          </a-form-item>
+          <a-form-item label="密码">
+            <a-input-password
+              v-decorator="rules['firstPwd']"
+              placeholder="请输入密码"
+              allow-clear
+              @blur="inputBlurHdl"
+            ></a-input-password>
+          </a-form-item>
+          <a-form-item label="再次确认密码">
+            <a-input-password
+              v-decorator="rules['secondPwd']"
+              placeholder="请输入与上面一致的密码"
+              allow-clear
+            ></a-input-password>
+          </a-form-item>
+          <a-form-item label="固定电话">
+            <a-input
+              v-decorator="rules['fixedPhone']"
+              placeholder="请输入固定电话"
+              allow-clear
+            />
+          </a-form-item>
+          <a-form-item label="手机号码">
+            <a-input
+              v-decorator="rules['cellPhone']"
+              placeholder="请输入手机号码"
+              allow-clear
+            />
+          </a-form-item>
+          <a-form-item label="邮箱">
+            <a-input
+              v-decorator="rules['email']"
+              placeholder="请输入邮箱"
+              allow-clear
+            />
+          </a-form-item>
+          <a-form-item label="权限角色">
+            <a-select
+              v-decorator="rules['role']"
+              placeholder="请选择权限角色"
+            >
+              <a-select-option key="FirstAudit" value="一审">一审</a-select-option>
+              <a-select-option key="SecondAudit" value="二审">二审</a-select-option>
+              <a-select-option key="FinalAudit" value="终审">终审</a-select-option>
+              <a-select-option key="Admin" value="管理员">管理员</a-select-option>
+            </a-select>
+          </a-form-item>
+          <a-form-item label="所属部门">
+            <a-select
+              v-decorator="rules['department']"
+              placeholder="请选择所属部门"
+            >
+              <a-select-option v-for="(item, index) in orgList" :key="index" :value="item.id">{{ item.name }}</a-select-option>
+            </a-select>
+          </a-form-item>
+          <div class="submit-box">
+            <a-button type="primary" html-type="submit" :loading="submitting">创建用户</a-button>
+          </div>
+        </a-form>
+      </a-spin>
     </div>
   </div>
 </template>
@@ -85,6 +88,8 @@ export default {
   name: 'NewUser',
   data() {
     return {
+      loading: true,
+      // form
       labelCol: {
         xs: { span: 24 },
         sm: { span: 8 },
@@ -95,109 +100,70 @@ export default {
       },
       form: this.$form.createForm(this, { name: 'new_user' }),
       rules: {
-        username: [
-          'username',
+        username: ['username', { rules: [
           {
-            rules: [
-              {
-                required: true,
-                message: '请输入用户名'
-              }
-            ]
+            required: true,
+            message: '请输入用户名'
           }
-        ],
-        name: [
-          'name',
-          {
-            rules: [
-              {
-                required: true,
-                message: '请输入真实姓名'
-              }
-            ]
+        ] }],
+        name: ['name', {
+          rules: [{
+            required: true,
+            message: '请输入真实姓名'
           }
-        ],
-        firstPwd: [
-          'password',
+          ] }],
+        firstPwd: ['password', { rules: [
           {
-            rules: [
-              {
-                required: true,
-                message: '请输入密码!'
-              },
-              {
-                min: 6,
-                message: '请输入至少6位密码!'
-              },
-              {
-                validator: this.validateFirstPassword,
-              },
-            ],
+            required: true,
+            message: '请输入密码!'
           },
-        ],
-        secondPwd: [
-          'confirm',
           {
-            rules: [
-              {
-                required: true,
-                message: '请输入与上面一致的密码!',
-              },
-              {
-                validator: this.validateSecondPassword,
-              },
-            ],
+            min: 6,
+            message: '请输入至少6位密码!'
           },
-        ],
+          {
+            validator: this.validateFirstPassword,
+          },
+        ] }],
+        secondPwd: ['confirm', { rules: [
+          {
+            required: true,
+            message: '请输入与上面一致的密码!',
+          },
+          {
+            validator: this.validateSecondPassword,
+          },
+        ] }],
         fixedPhone: ['fixedPhone'],
-        cellPhone: [
-          'cellPhone',
+        cellPhone: ['cellPhone', { rules: [
           {
-            rules: [
-              {
-                required: true,
-                message: '请输入手机号码!'
-              }
-            ],
-          },
-        ],
-        email: [
-          'email',
-          {
-            rules: [
-              {
-                type: 'email',
-                message: '请输入正确的电子邮箱!',
-              }
-            ],
-          },
-        ],
-        role: [
-          'role',
-          {
-            rules: [
-              {
-                required: true,
-                message: '请选择权限角色!'
-              }
-            ]
+            required: true,
+            message: '请输入手机号码!'
           }
-        ],
-        department: [
-          'department',
+        ] }],
+        email: ['email', { rules: [
           {
-            rules: [
-              {
-                required: true,
-                message: '请选择所属部门!'
-              }
-            ]
+            type: 'email',
+            message: '请输入正确的电子邮箱!',
           }
-        ]
+        ] }],
+        role: ['role', { rules: [
+          {
+            required: true,
+            message: '请选择权限角色!'
+          }
+        ] }],
+        department: ['department', { rules: [
+          {
+            required: true,
+            message: '请选择所属部门!'
+          }
+        ] }]
       },
       validPwd: false,
       orgList: [],
       submitting: false,
+      // tip
       tipMessage: '带红色星号的为必填，不带的为选填'
     }
   },
@@ -205,12 +171,13 @@ export default {
     this.$api.getAllOrgs()
       .then((res) => {
         if (!res.data.status) {
-          return Promise.reject(res.data.msg)
+          return Promise.reject(new Error(res.data.msg))
         }
         this.orgList = res.data.data.orgs
+        this.loading = false
       })
       .catch((err) => {
-        this.$message.error(err?.message)
+        this.$message.error(err.message)
       })
   },
   methods: {
@@ -236,30 +203,31 @@ export default {
       e.preventDefault()
       this.form.validateFields((err, values) => {
         if (err) {
-          this.$message.error(err)
+          this.$message.error('请检查是否填写正确')
           return
         }
 
         this.submitting = true
+        const { name, username, password, fixedPhone, cellPhone, email, role, department } = values
         this.$api.createUser({
-          name: values.name,
+          name,
           // eslint-disable-next-line camelcase
-          user_id: values.username,
-          password: values.password,
-          tel: values.fixedPhone,
-          phone: values.cellPhone,
-          email: values.email,
-          role: values.role,
-          org: values.department
+          user_id: username,
+          password,
+          tel: fixedPhone,
+          phone: cellPhone,
+          email,
+          role,
+          org: department
         }).then((res) => {
           if (!res.data.status) {
-            throw new Error(res.data.msg)
+            return Promise.reject(new Error(res.data.msg))
           }
 
-          this.$message.success('用户创建成功！')
+          this.$message.success('用户创建成功')
           this.$router.push('/user/manage')
         }).catch((err) => {
-          this.$message.error(err)
+          this.$message.error(err.message)
         }).finally(() => {
           this.submitting = false
         })

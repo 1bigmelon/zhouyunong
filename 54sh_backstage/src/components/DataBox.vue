@@ -1,5 +1,5 @@
 <template>
-  <div class="data-box--container">
+  <div class="data-box--container" @click="$emit('click')">
     <div class="icon-box">
       <a-icon :type="icon" style="font-size: 1.5rem;"></a-icon>
     </div>

@@ -71,6 +71,11 @@ export const routes = [
         name: 'manageTag',
         component: () => import('@/pages/tag/manageTag')
       },
+      {
+        path: 'edit/:id',
+        name: 'editTag',
+        component: () => import('@/pages/tag/editTag')
+      }
     ]
   },
   {
@@ -95,6 +100,31 @@ export const routes = [
         path: 'edit/:username',
         name: 'editUser',
         component: () => import('@/pages/user/editUser')
+      }
+    ]
+  },
+  {
+    path: '/org',
+    component: () => import('@/layouts/MainLayout'),
+    children: [
+      {
+        path: '',
+        redirect: () => 'manage'
+      },
+      {
+        path: 'new',
+        name: 'newOrg',
+        component: () => import('@/pages/org/newOrg')
+      },
+      {
+        path: 'manage',
+        name: 'manageOrg',
+        component: () => import('@/pages/org/manageOrg')
+      },
+      {
+        path: 'edit/:id',
+        name: 'editOrg',
+        component: () => import('@/pages/org/editOrg')
       }
     ]
   },

@@ -92,7 +92,7 @@ const columns = [
 export default {
   name: 'ManageCategory',
   components: {
-    'data-box': DataBox
+    DataBox
   },
   data() {
     return {
@@ -108,8 +108,7 @@ export default {
       .then((res) => {
         console.log(res)
         if (!res.data.status) {
-          this.$message.error(res.data.msg)
-          return Promise.resolve()
+          return Promise.reject(new Error(res.data.msg))
         }
         const { divs } = res.data.data
         this.categoryList = divs
@@ -118,6 +117,9 @@ export default {
         // this.disabledCategory = disable
 
 
+      })
+      .catch((err) => {
+        this.$message.error(err.message)
       })
   },
   methods: {

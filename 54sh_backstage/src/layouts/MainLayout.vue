@@ -106,6 +106,26 @@
             />
           </div>
         </div>
+        <div v-if="userInfo.auth >= 4" class="divider"></div>
+        <div v-if="userInfo.auth >= 4" id="organization-manage">
+          <div class="side-bar-title">
+            <span>组织管理</span>
+          </div>
+          <div>
+            <menu-item
+              text="新建组织"
+              icon="usergroup-add"
+              name="newOrg"
+              to="/org/new"
+            />
+            <menu-item
+              text="组织管理"
+              icon="cluster"
+              name="manageOrg"
+              to="/org/manage"
+            />
+          </div>
+        </div>
         <div class="divider"></div>
         <div id="logout">
           <div class="side-bar-title">
@@ -280,7 +300,7 @@ export default {
       overflow: auto;
       background-color: #fff;
       z-index: 999;
-      box-shadow: 0 0 .2px .2px rgb(0, 0, 0, 0.1);
+      box-shadow: 0 0 .2px .2px rgba(0, 0, 0, 0.1);
 
       &::-webkit-scrollbar-track,
       &::-webkit-scrollbar,
@@ -320,7 +340,7 @@ export default {
       left: $side-bar-width;
       background-color: #fff;
       z-index: 999;
-      box-shadow: 0 0 .2px .2px rgb(0, 0, 0, 0.1);
+      box-shadow: 0 0 .2px .2px rgba(0, 0, 0, 0.1);
 
       .fold-box {
         position: absolute;

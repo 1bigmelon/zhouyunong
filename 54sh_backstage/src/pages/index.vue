@@ -106,7 +106,7 @@ const color = ['pink', 'red', 'orange', 'green', 'cyan', 'blue', 'purple']
 export default {
   name: 'Index',
   components: {
-    'data-box': DataBox
+    DataBox
   },
   data() {
     return {
@@ -153,8 +153,8 @@ export default {
     if (hour >= 6 && hour < 9) this.greeting = '早上好'
     if (hour >= 9 && hour < 11) this.greeting = '上午好'
     if (hour >= 11 && hour < 13) this.greeting = '中午好'
-    if (hour >= 13 && hour < 19) this.greeting = '下午好'
-    if (hour >= 19 || hour < 6) this.greeting = '晚上好'
+    if (hour >= 13 && hour < 18) this.greeting = '下午好'
+    if (hour >= 18 || hour < 6) this.greeting = '晚上好'
 
     this.test.forEach((item) => {
       item.time = moment().format('YYYY[-]MM[-]DD HH:mm:ss')

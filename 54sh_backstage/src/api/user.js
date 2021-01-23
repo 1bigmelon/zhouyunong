@@ -8,11 +8,17 @@ export default {
     // eslint-disable-next-line camelcase
     return Axios.post('/user/info', { user_id: username })
   },
-  getAllUsers() {
-    return Axios.get('/user/ls')
+  getUsersByPageNum(page) {
+    return Axios.get(`/user/ls?page=${page}`)
   },
-  disableUser(userInfo) {
-    return Axios.post('/user/disable', userInfo)
+  disableUser(id) {
+    return Axios.post('/user/disable', { id })
+  },
+  enableUser(id) {
+    return Axios.post('/user/chinfo', {
+      id,
+      status: true
+    })
   },
   changeUserInfo(userInfo) {
     return Axios.post('/user/chinfo', userInfo)
