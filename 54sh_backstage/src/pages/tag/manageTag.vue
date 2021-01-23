@@ -178,7 +178,7 @@ export default {
   },
   mounted() {
     Promise.all([
-      this.$api.getAllTags(),
+      this.$api.getTagsByPageNum(1),
       this.$api.getAllOrgs(),
       this.$api.getAllCategories()
     ]).then((res) => {
@@ -248,7 +248,27 @@ export default {
             enumerable: true
           })
         }
+
+        this.searching = this.loading = true
+        this.$api.searchTag(criteria)
+          .then((res) => {
+            if (!res.data.status) {
+              return Promise.reject(new Error(res.data.msg))
+            }
+            this.tagList = res.data.data.tags.map((item) => Object.assign(item, {
+              // eslint-disable-next-line camelcase
+              last_modify: moment.parseZone(item.last_modify.substr(5, item.last_modify.length - 3)).format('YYYY[-]MM[-]DD HH[:]mm[:]ss'),
+              statusText: item.status ? '使用中' : '已停用'
+            }))
+          })
+          .catch((err) => {
+            this.$message.error(err?.message)
+          })
+          .finally(() => {
+            this.searching = this.loading = false
+          })
       })
+
     },
     edit(id) {
       this.$router.push(`/tag/edit/${id}`)
