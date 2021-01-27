@@ -1,43 +1,46 @@
 <template>
   <div class="container">
     <div class="form-box">
-      <a-form class="form" :form="form" :label-col="labelCol" :wrapper-col="wrapperCol" label-align="left" @submit="submitBtnHdl">
-        <a-form-item label="分类总署">
-          <a-select
-            v-decorator="rules['role']"
-            placeholder="请选择分类总署"
-          >
-            <a-select-option key="department" value="校团委部门">校团委部门</a-select-option>
-            <a-select-option key="column" value="校团委专栏">校团委专栏</a-select-option>
-          </a-select>
-        </a-form-item>
-        <a-form-item label="名称">
-          <a-input
-            v-decorator="rules['categoryName']"
-            placeholder="请输入名称"
-            allow-clear
-          ></a-input>
-        </a-form-item>
-        <a-form-item label="所属组织">
-          <a-select
-            v-decorator="rules['organization']"
-            placeholder="请选择所属组织"
-          >
-            <a-select-option v-for="(item, index) in orgList" :key="index" :value="item.id">{{ item.name }}</a-select-option>
-          </a-select>
-        </a-form-item>
-        <a-form-item label="描述">
-          <a-input
-            v-decorator="rules['description']"
-            placeholder="请输入描述"
-            allow-clear
-          ></a-input>
-        </a-form-item>
-        <div class="submit-box">
-          <a-button type="primary" html-type="submit" :loading="submitting">新建分类</a-button>
-        </div>
-      </a-form>
-    </div>
+      <a-alert :message="tipMessage" type="info" show-icon style="margin-bottom: .5rem;" />
+      <a-spin tip="加载中..." :delay="100" size="large" :spinning="loading">
+        <a-icon slot="indicator" type="loading" spin />
+        <a-form class="form" :form="form" :label-col="labelCol" :wrapper-col="wrapperCol" label-align="left" @submit="submitBtnHdl">
+          <a-form-item label="分类总署">
+            <a-select
+              v-decorator="rules['role']"
+              placeholder="请选择分类总署"
+            >
+              <a-select-option key="department" value="校团委部门">校团委部门</a-select-option>
+              <a-select-option key="column" value="校团委专栏">校团委专栏</a-select-option>
+            </a-select>
+          </a-form-item>
+          <a-form-item label="名称">
+            <a-input
+              v-decorator="rules['categoryName']"
+              placeholder="请输入名称"
+              allow-clear
+            ></a-input>
+          </a-form-item>
+          <a-form-item label="所属组织">
+            <a-select
+              v-decorator="rules['organization']"
+              placeholder="请选择所属组织"
+            >
+              <a-select-option v-for="(item, index) in orgList" :key="index" :value="item.id">{{ item.name }}</a-select-option>
+            </a-select>
+          </a-form-item>
+          <a-form-item label="描述">
+            <a-input
+              v-decorator="rules['description']"
+              placeholder="请输入描述"
+              allow-clear
+            ></a-input>
+          </a-form-item>
+          <div class="submit-box">
+            <a-button type="primary" html-type="submit" :loading="submitting">新建分类</a-button>
+          </div>
+        </a-form>
+      </a-spin></div>
   </div>
 </template>
 
@@ -56,53 +59,38 @@ export default {
       },
       form: this.$form.createForm(this, { name: 'new_category' }),
       rules: {
-        headquarters: [
-          'headquarters',
+        headquarters: ['headquarters', { rules: [
           {
-            rules: [
-              {
-                required: true,
-                massage: '请选择分类总署'
-              }
-            ]
+            required: true,
+            massage: '请选择分类总署'
           }
-        ],
+        ] }],
         categroyName: [
-          'categroyName',
-          {
-            rules: [
-              {
-                required: true,
-                massage: '请输入名称'
-              }
-            ]
-          }
-        ],
+          'categroyName', { rules: [
+            {
+              required: true,
+              massage: '请输入名称'
+            }
+          ] }],
         description: [
-          'description',
-          {
-            rules: [
-              {
-                ruquired: true,
-                massage: '请输入描述'
-              }
-            ]
-          }
-        ],
+          'description', { rules: [
+            {
+              ruquired: true,
+              massage: '请输入描述'
+            }
+          ] }],
         organization: [
-          'organization',
-          {
-            rules: [
-              {
-                ruquired: true,
-                massage: '请输入所属组织'
-              }
-            ]
-          }
-        ]
+          'organization', { rules: [
+            {
+              ruquired: true,
+              massage: '请输入所属组织'
+            }
+          ] }]
       },
       orgList: [],
-      submitting: false
+      submitting: false,
+      tipMessage: '带红色星号的为必填，不带的为选填',
+      loading: true
     }
   },
   mounted() {
@@ -114,6 +102,7 @@ export default {
         }
         console.log(res)
         this.orgList = res.data.data.orgs
+        this.loading = false
       })
   },
   methods: {
@@ -165,6 +154,8 @@ export default {
 
       display: flex;
       justify-content: center;
+      align-items: center;
+      flex-direction: column;
 
       .form {
         width: 25rem;
