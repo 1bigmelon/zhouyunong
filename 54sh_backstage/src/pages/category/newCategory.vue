@@ -5,19 +5,17 @@
       <a-spin tip="加载中..." :delay="100" size="large" :spinning="loading">
         <a-icon slot="indicator" type="loading" spin />
         <a-form class="form" :form="form" :label-col="labelCol" :wrapper-col="wrapperCol" label-align="left" @submit="submitBtnHdl">
-          <a-form-item label="分类总署">
-            <a-select
-              v-decorator="rules['role']"
-              placeholder="请选择分类总署"
-            >
-              <a-select-option key="department" value="校团委部门">校团委部门</a-select-option>
-              <a-select-option key="column" value="校团委专栏">校团委专栏</a-select-option>
-            </a-select>
-          </a-form-item>
           <a-form-item label="名称">
             <a-input
-              v-decorator="rules['categoryName']"
+              v-decorator="rules['name']"
               placeholder="请输入名称"
+              allow-clear
+            ></a-input>
+          </a-form-item>
+          <a-form-item label="描述">
+            <a-input
+              v-decorator="rules['description']"
+              placeholder="请输入描述"
               allow-clear
             ></a-input>
           </a-form-item>
@@ -29,12 +27,14 @@
               <a-select-option v-for="(item, index) in orgList" :key="index" :value="item.id">{{ item.name }}</a-select-option>
             </a-select>
           </a-form-item>
-          <a-form-item label="描述">
-            <a-input
-              v-decorator="rules['description']"
-              placeholder="请输入描述"
-              allow-clear
-            ></a-input>
+          <a-form-item label="分类总署">
+            <a-select
+              v-decorator="rules['headquarters']"
+              placeholder="请选择分类总署"
+            >
+              <a-select-option key="department" value="校团委部门">校团委部门</a-select-option>
+              <a-select-option key="column" value="校团委专栏">校团委专栏</a-select-option>
+            </a-select>
           </a-form-item>
           <div class="submit-box">
             <a-button type="primary" html-type="submit" :loading="submitting">新建分类</a-button>
@@ -46,7 +46,7 @@
 
 <script>
 export default {
-  name: 'NewCateg',
+  name: 'NewCategory',
   data() {
     return {
       labelCol: {
@@ -59,31 +59,26 @@ export default {
       },
       form: this.$form.createForm(this, { name: 'new_category' }),
       rules: {
-        headquarters: ['headquarters', { rules: [
-          {
-            required: true,
-            massage: '请选择分类总署'
-          }
-        ] }],
-        categroyName: [
-          'categroyName', { rules: [
+        name: [
+          'name', { rules: [
             {
               required: true,
-              massage: '请输入名称'
+              message: '请输入名称'
             }
           ] }],
-        description: [
-          'description', { rules: [
+        description: ['description'],
+        headquarters: [
+          'headquarters', { rules: [
             {
-              ruquired: true,
-              massage: '请输入描述'
+              required: true,
+              message: '请选择分类总署'
             }
           ] }],
         organization: [
           'organization', { rules: [
             {
-              ruquired: true,
-              massage: '请输入所属组织'
+              required: true,
+              message: '请输入所属组织'
             }
           ] }]
       },
