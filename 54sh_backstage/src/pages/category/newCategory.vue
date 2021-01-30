@@ -7,15 +7,8 @@
         <a-form class="form" :form="form" :label-col="labelCol" :wrapper-col="wrapperCol" label-align="left" @submit="submitBtnHdl">
           <a-form-item label="名称">
             <a-input
-              v-decorator="rules['name']"
+              v-decorator="rules['categoryName']"
               placeholder="请输入名称"
-              allow-clear
-            ></a-input>
-          </a-form-item>
-          <a-form-item label="描述">
-            <a-input
-              v-decorator="rules['description']"
-              placeholder="请输入描述"
               allow-clear
             ></a-input>
           </a-form-item>
@@ -27,14 +20,12 @@
               <a-select-option v-for="(item, index) in orgList" :key="index" :value="item.id">{{ item.name }}</a-select-option>
             </a-select>
           </a-form-item>
-          <a-form-item label="分类总署">
-            <a-select
-              v-decorator="rules['headquarters']"
-              placeholder="请选择分类总署"
-            >
-              <a-select-option key="department" value="校团委部门">校团委部门</a-select-option>
-              <a-select-option key="column" value="校团委专栏">校团委专栏</a-select-option>
-            </a-select>
+          <a-form-item label="描述">
+            <a-input
+              v-decorator="rules['description']"
+              placeholder="请输入描述"
+              allow-clear
+            ></a-input>
           </a-form-item>
           <div class="submit-box">
             <a-button type="primary" html-type="submit" :loading="submitting">新建分类</a-button>
@@ -46,7 +37,7 @@
 
 <script>
 export default {
-  name: 'NewCategory',
+  name: 'NewCateg',
   data() {
     return {
       labelCol: {
@@ -59,26 +50,25 @@ export default {
       },
       form: this.$form.createForm(this, { name: 'new_category' }),
       rules: {
-        name: [
-          'name', { rules: [
+        categoryName: [
+          'categoryName', { rules: [
             {
               required: true,
-              message: '请输入名称'
+              massage: '请输入名称'
             }
           ] }],
-        description: ['description'],
-        headquarters: [
-          'headquarters', { rules: [
+        description: [
+          'description', { rules: [
             {
-              required: true,
-              message: '请选择分类总署'
+              required: false,
+              massage: '请输入描述'
             }
           ] }],
         organization: [
           'organization', { rules: [
             {
               required: true,
-              message: '请输入所属组织'
+              massage: '请输入所属组织'
             }
           ] }]
       },
