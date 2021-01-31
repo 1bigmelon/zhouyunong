@@ -54,6 +54,11 @@ export const routes = [
         path: 'manage',
         name: 'manageCategory',
         component: () => import('@/pages/category/manageCategory'),
+      },
+      {
+        path: 'edit/:id',
+        name: 'editCategory',
+        component: () => import('@/pages/category/editCategory')
       }
     ]
   },

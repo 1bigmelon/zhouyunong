@@ -29,6 +29,7 @@ const contentTitleMap = {
   'manageArticle': '文章管理',
   'newCategory': '新建分类',
   'manageCategory': '分类管理',
+  'editCategory': '编辑分类',
   'newTag': '新建标签',
   'manageTag': '标签管理',
   'editTag': '编辑标签',

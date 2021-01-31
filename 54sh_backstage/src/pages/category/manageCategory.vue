@@ -1,9 +1,9 @@
 <template>
   <div class="container">
     <div class="data-box">
-      <data-box icon="team" title="分类总数" :value="totalCategory" @click="dataBoxHdl"/>
-      <data-box icon="user" title="启用中分类数" :value="enabledCategory" @click="dataBoxHdl({ status: '使用中' })"/>
-      <data-box icon="user-delete" title="已停用分类数" :value="disabledCategory" @click="dataBoxHdl({ status: '已停用' })"/>
+      <data-box icon="team" title="分类总数" :value="totalCategory" @click="dataBoxHdl" />
+      <data-box icon="user" title="启用中分类数" :value="enabledCategory" @click="dataBoxHdl({ status: '使用中' })" />
+      <data-box icon="user-delete" title="已停用分类数" :value="disabledCategory" @click="dataBoxHdl({ status: '已停用' })" />
     </div>
     <div class="content-box">
       <div class="search-box">
@@ -156,7 +156,6 @@ export default {
       disabledCategory: -1,
       form: this.$form.createForm(this, { name: 'category_search' }),
       rules: {
-        headquarters: ['headquarters'],
         categoryName: ['categoryName'],
         role: ['role', {
           initialValue: 'all'
@@ -185,17 +184,13 @@ export default {
           return Promise.reject(new Error(item.data.msg))
         }
       })
-      // console.log(res[0].data.data)
       const { divs } = res[0].data.data
-      console.log(res[0].data.data)
-      console.log(divs)
       this.categoryList = divs.map((item) => Object.assign(item, {
         // eslint-disable-next-line camelcase
         last_modify: moment.parseZone(item.last_modify.substr(5, item.last_modify.length - 3)).format('YYYY[-]MM[-]DD HH[:]mm[:]ss'),
         statusText: item.status ? '使用中' : '已停用'
       }))
       this.totalCategory = divs.length
-
       this.orgList = [
         {
           name: '全部',
@@ -203,6 +198,8 @@ export default {
         },
         ...res[1].data.data.orgs
       ]
+      // console.log(this.orgList)
+      console.log(res[0].data.data)
       this.loading = false
     }).catch((err) => {
       this.$message.error(err.message)
@@ -211,7 +208,6 @@ export default {
   methods: {
     reset() {
       this.form.setFieldsValue({
-        headquarters: '',
         categoryName: '',
         organization: 'all',
         status: 'all'
@@ -247,7 +243,6 @@ export default {
             if (!res.data.status) {
               return Promise.reject(new Error(res.data.msg))
             }
-            // console.log(res.data.data.divs)
             this.categoryList = res.data.data.divs.map((item) => Object.assign(item, {
               // eslint-disable-next-line camelcase
               last_modify: moment.parseZone(item.last_modify.substr(5, item.last_modify.length - 3)).format('YYYY[-]MM[-]DD HH[:]mm[:]ss'),
@@ -335,7 +330,6 @@ export default {
     },
     dataBoxHdl(preset = {}) {
       this.form.setFieldsValue(Object.assign({
-        headquarters: '',
         categoryName: '',
         organization: 'all',
         status: 'all'
