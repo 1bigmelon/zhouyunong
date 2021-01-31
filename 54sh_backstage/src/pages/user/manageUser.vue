@@ -42,7 +42,7 @@
       </div>
       <a-spin tip="加载中..." :delay="100" size="large" :spinning="loading">
         <a-icon slot="indicator" type="loading" spin />
-        <div class="user-list-box">
+        <div class="low-height-list-box">
           <a-table :columns="columns" row-key="id" :data-source="userList" :pagination="false">
             <template slot="email" slot-scope="text">
               <span>{{ text ? text : '-' }}</span>

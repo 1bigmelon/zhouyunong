@@ -55,12 +55,12 @@ export default {
     font-weight: bold;
   }
 
-  .index-list-box .ant-table-tbody > tr > td {
+  .high-height-list-box .ant-table-tbody > tr > td {
     padding: 0 .3rem;
     height: 4rem;
   }
 
-  .user-list-box, .tag-list-box, .org-list-box {
+  .low-height-list-box {
     .ant-table-tbody > tr > td {
       padding: 0 .3rem;
       height: 2.8rem;

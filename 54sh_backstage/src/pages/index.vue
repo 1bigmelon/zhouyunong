@@ -15,7 +15,7 @@
     <div class="content-box">
       <div class="search-box">
       </div>
-      <div class="index-list-box">
+      <div class="high-height-list-box">
         <a-table :columns="columns" :data-source="test" row-key="id">
           <template slot="tag" slot-scope="tags">
             <a-tag
