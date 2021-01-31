@@ -12,6 +12,13 @@
               allow-clear
             ></a-input>
           </a-form-item>
+          <a-form-item label="描述">
+            <a-input
+              v-decorator="rules['description']"
+              placeholder="请输入描述"
+              allow-clear
+            ></a-input>
+          </a-form-item>
           <a-form-item label="所属组织">
             <a-select
               v-decorator="rules['organization']"
@@ -19,13 +26,6 @@
             >
               <a-select-option v-for="(item, index) in orgList" :key="index" :value="item.id">{{ item.name }}</a-select-option>
             </a-select>
-          </a-form-item>
-          <a-form-item label="描述">
-            <a-input
-              v-decorator="rules['description']"
-              placeholder="请输入描述"
-              allow-clear
-            ></a-input>
           </a-form-item>
           <div class="submit-box">
             <a-button type="primary" html-type="submit" :loading="submitting">新建分类</a-button>
@@ -37,7 +37,7 @@
 
 <script>
 export default {
-  name: 'NewCateg',
+  name: 'NewCategory',
   data() {
     return {
       labelCol: {
@@ -57,13 +57,7 @@ export default {
               massage: '请输入名称'
             }
           ] }],
-        description: [
-          'description', { rules: [
-            {
-              required: false,
-              massage: '请输入描述'
-            }
-          ] }],
+        description: ['description'],
         organization: [
           'organization', { rules: [
             {
@@ -82,12 +76,14 @@ export default {
     this.$api.getAllOrgs()
       .then((res) => {
         if (!res.data.status) {
-          this.$message.error(res.data.msg)
-          return Promise.resolve()
+          return Promise.reject(new Error(res.data.msg))
         }
-        console.log(res)
+
         this.orgList = res.data.data.orgs
         this.loading = false
+      })
+      .catch((err) => {
+        this.$message.error(err.message)
       })
   },
   methods: {
@@ -101,19 +97,20 @@ export default {
 
         this.submitting = true
         this.$api.createCategory({
-          name: values.categroyName,
+          name: values.name,
           org: values.organization,
           description: values.description,
         }).then((res) => {
           this.submitting = false
 
           if (!res.data.status) {
-            this.$message.error(res.data.msg)
-            return Promise.resolve()
+            return Promise.reject(new Error(res.data.msg))
           }
 
           this.$message.success('分类创建成功！')
           this.$router.push('/category/manage')
+        }).catch((err) => {
+          this.$message.error(err.message)
         })
       })
     }
