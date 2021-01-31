@@ -45,6 +45,8 @@
 </template>
 
 <script>
+const colors = ['pink', 'red', 'orange', 'green', 'cyan', 'blue', 'purple']
+
 export default {
   name: 'NewTag',
   data() {
@@ -84,26 +86,28 @@ export default {
       categoryList: [],
       submitting: false,
       tipMessage: '带红色星号的为必填，不带的为选填',
-      loading: true
+      loading: true,
+      colors
     }
   },
   mounted() {
-    Promise.all([this.$api.getAllOrgs(), this.$api.getAllCategories()])
-      .then((res) => {
-        res.forEach((item) => {
-          if (!item.data.status) {
-            return Promise.reject(new Error(item.data.msg))
-          }
-        })
-        this.orgList = res[0].data.data.orgs
-
-        this.categoryList = res[1].data.data.divs
-
-        this.loading = false
+    Promise.all([
+      this.$api.getAllOrgs(),
+      this.$api.getAllCategories()
+    ]).then((res) => {
+      res.forEach((item) => {
+        if (!item.data.status) {
+          return Promise.reject(new Error(item.data.msg))
+        }
       })
-      .catch((err) => {
-        this.$message.error(err.message)
-      })
+      this.orgList = res[0].data.data.orgs
+
+      this.categoryList = res[1].data.data.divs
+
+      this.loading = false
+    }).catch((err) => {
+      this.$message.error(err.message)
+    })
   },
   methods: {
     submitBtnHdl(e) {
@@ -120,7 +124,7 @@ export default {
           name,
           org: organization,
           description,
-          color: 'pink'
+          color: this.colors[(Math.random() * this.colors.length) | 0]
         }).then((res) => {
           if (!res.data.status) {
             return Promise.reject(new Error(res.data.msg))
