@@ -33,7 +33,7 @@
       </div>
       <a-spin tip="加载中..." :delay="100" size="large" :spinning="loading">
         <a-icon slot="indicator" type="loading" spin />
-        <div class="list-box">
+        <div class="low-height-list-box">
           <a-table :columns="columns" row-key="id" :data-source="categoryList" :pagination="false">
             <template slot="description" slot-scope="text">
               <span>{{ text ? text : '无' }}</span>
