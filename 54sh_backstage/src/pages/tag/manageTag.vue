@@ -38,8 +38,13 @@
       </div>
       <a-spin tip="加载中..." :delay="100" size="large" :spinning="loading">
         <a-icon slot="indicator" type="loading" spin />
-        <div class="tag-list-box">
+        <div class="low-height-list-box">
           <a-table :columns="columns" row-key="id" :data-source="tagList" :pagination="false">
+            <template slot="color">
+              <a-tag :color="colors[(Math.random() * colors.length) | 0]">
+                颜色
+              </a-tag>
+            </template>
             <template slot="description" slot-scope="text">
               <span>{{ text ? text : '无' }}</span>
             </template>
@@ -88,6 +93,13 @@ const columns = [
     align: 'center'
   },
   {
+    title: '显示颜色',
+    key: 'color',
+    width: '8%',
+    align: 'center',
+    scopedSlots: { customRender: 'color' }
+  },
+  {
     title: '所属分类',
     key: 'category',
     dataIndex: '',
@@ -105,7 +117,7 @@ const columns = [
     title: '描述',
     key: 'description',
     dataIndex: 'description',
-    width: '22%',
+    width: '20%',
     align: 'center',
     scopedSlots: { customRender: 'description' }
   },
@@ -140,6 +152,8 @@ const columns = [
   },
 ]
 
+const colors = ['pink', 'red', 'orange', 'green', 'cyan', 'blue', 'purple']
+
 export default {
   inject: ['refresh'],
   name: 'ManageTag',
@@ -173,7 +187,8 @@ export default {
       columns,
       tagList: [],
       loading: true,
-      nowPage: 1
+      nowPage: 1,
+      colors
     }
   },
   mounted() {
